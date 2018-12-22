@@ -1,5 +1,5 @@
 enum AvatarType {
-  EMOJI,
+  EMOJI = 'EMOJI',
 }
 
 export default AvatarType;

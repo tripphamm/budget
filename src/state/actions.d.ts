@@ -1,11 +1,14 @@
-import ActionType from '../enums/ActionType';
+import ActionType from './ActionType';
 import UploadState from '../enums/UploadState';
-import { BudgeAvatar, BudgeUser } from '../budge-app-env';
+import { BudgeAvatar, BudgeUser, UserDocument } from '../budge-app-env';
 
 type AnyAction =
   | SetUserSuccessAction
-  | ClearSetUserErrorAction
   | SetUserFailureAction
+  | ClearSetUserErrorAction
+  | SaveUserSuccessAction
+  | SaveUserFailureAction
+  | ClearSaveUserErrorAction
   | ToggleSideDrawerOpenAction
   | ToggleAuthenticatingAction
   | ToggleSavingAction
@@ -14,7 +17,8 @@ type AnyAction =
   | CompleteUploadAction
   | FailUploadAction
   | SetUserDisplayNameAction
-  | SetUserAvatarAction;
+  | SetUserAvatarAction
+  | SetUserThemeAction;
 
 interface ToggleSideDrawerOpenAction {
   type: ActionType.TOGGLE_SIDE_DRAWER_OPEN;
@@ -43,6 +47,20 @@ interface SetUserFailureAction {
 
 interface ClearSetUserErrorAction {
   type: ActionType.CLEAR_SET_USER_ERROR;
+}
+
+interface SaveUserSuccessAction {
+  type: ActionType.SAVE_USER_SUCCESS;
+  userDocument: UserDocument;
+}
+
+interface SaveUserFailureAction {
+  type: ActionType.SAVE_USER_FAILURE;
+  error: Error;
+}
+
+interface ClearSaveUserErrorAction {
+  type: ActionType.CLEAR_SAVE_USER_ERROR;
 }
 
 interface StartUploadAction {
@@ -76,4 +94,9 @@ interface SetUserDisplayNameAction {
 interface SetUserAvatarAction {
   type: ActionType.SET_USER_AVATAR;
   avatar: BudgeAvatar;
+}
+
+interface SetUserThemeAction {
+  type: ActionType.SET_USER_THEME;
+  theme: string;
 }

@@ -1,4 +1,4 @@
-import ActionType from '../enums/ActionType';
+import ActionType from './ActionType';
 import UploadState from '../enums/UploadState';
 import initialState from '../state/initialState';
 import { BudgeState, BudgeUser } from '../budge-app-env';
@@ -20,6 +20,30 @@ export default (state: BudgeState = initialState, action: AnyAction): BudgeState
       return {
         ...state,
         setUserError: null,
+      };
+    case ActionType.SAVE_USER_SUCCESS:
+      return {
+        ...state,
+        user: {
+          ...(state.user as BudgeUser),
+          persistedDisplayName: action.userDocument.displayName,
+          persistedAvatar: action.userDocument.avatar,
+          persistedTheme: action.userDocument.theme,
+
+          displayName: action.userDocument.displayName,
+          avatar: action.userDocument.avatar,
+          theme: action.userDocument.theme,
+        },
+      };
+    case ActionType.SAVE_USER_FAILURE:
+      return {
+        ...state,
+        saveUserError: action.error,
+      };
+    case ActionType.CLEAR_SAVE_USER_ERROR:
+      return {
+        ...state,
+        saveUserError: null,
       };
     case ActionType.TOGGLE_AUTHENTICATING:
       return {
@@ -90,6 +114,14 @@ export default (state: BudgeState = initialState, action: AnyAction): BudgeState
         user: {
           ...(state.user as BudgeUser), // tip typescript that state.user is guaranteed to be non-null
           avatar: action.avatar,
+        },
+      };
+    case ActionType.SET_USER_THEME:
+      return {
+        ...state,
+        user: {
+          ...(state.user as BudgeUser), // tip typescript that state.user is guaranteed to be non-null
+          theme: action.theme,
         },
       };
     default:

@@ -57,11 +57,35 @@ function convertTo128px(imageSrc: string) {
   return imageSrc.replace('/32/', '/128/');
 }
 
+const emojiImageSrcCache = new Map();
+function addToCache(unicodeOrShortName: string, imageSrc: string) {
+  emojiImageSrcCache.set(unicodeOrShortName, imageSrc);
+}
+
+function getFromCache(unicodeOrShortName: string): string | null {
+  if (!emojiImageSrcCache.has(unicodeOrShortName)) {
+    return null;
+  }
+
+  return emojiImageSrcCache.get(unicodeOrShortName);
+}
+
 export function getImageSrcByUnicodeOrShortName(unicodeOrShortName: string) {
+  const cachedResult = getFromCache(unicodeOrShortName);
+
+  if (cachedResult !== null) {
+    return cachedResult;
+  }
+
   if (isValidUnicodeOrShortName(unicodeOrShortName)) {
-    const shortName = convertUnicodeOrShortNameToShortName(unicodeOrShortName);
-    const imageHTMLString = emojione.shortnameToImage(shortName);
-    return convertTo64px(parseSrcFromImageHTMLString(imageHTMLString));
+    const shortName = convertUnicodeOrShortNameToShortName(unicodeOrShortName); // 10ms
+
+    const imageHTMLString = emojione.shortnameToImage(shortName); // 0.1ms
+    const sizedImageHTMLString = convertTo64px(parseSrcFromImageHTMLString(imageHTMLString)); // 0.1ms
+
+    addToCache(unicodeOrShortName, sizedImageHTMLString);
+
+    return sizedImageHTMLString;
   }
 
   // if the shortName is invalid (hopefully we didn't let it get this far) return the '?' emoji

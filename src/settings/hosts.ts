@@ -1,4 +1,4 @@
-import { getEnvironment } from './environment';
+import { getEnvironment } from './environments';
 import Environment from '../enums/Environment';
 
 export function getGoogleCloudStorageBucket() {

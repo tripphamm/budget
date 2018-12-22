@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { observeAuthState, unobserveAuthState } from './state/asyncActions';
+import { observeAuthState, unobserveAuthState } from './state/asyncActionCreators';
 
 import SignIn from './pages/SignIn';
-import Welcome from './pages/Welcome';
+import ChooseName from './pages/ChooseName';
+import ChooseAvatar from './pages/ChooseAvatar';
+import ChooseTheme from './pages/ChooseTheme';
 import { BudgeUser, BudgeState } from './budge-app-env';
 
 interface UserGateProps {
@@ -16,11 +18,11 @@ interface UserGateProps {
 
 class UserGate extends React.Component<UserGateProps, {}> {
   componentDidMount() {
-    observeAuthState();
+    this.props.observeAuthState();
   }
 
   componentWillUnmount() {
-    unobserveAuthState();
+    this.props.unobserveAuthState();
   }
 
   render() {
@@ -30,8 +32,16 @@ class UserGate extends React.Component<UserGateProps, {}> {
       return <SignIn />;
     }
 
-    if (user.isNew) {
-      return <Welcome />;
+    if (user.persistedDisplayName === null) {
+      return <ChooseName />;
+    }
+
+    if (user.persistedAvatar === null) {
+      return <ChooseAvatar />;
+    }
+
+    if (user.persistedTheme === null) {
+      return <ChooseTheme />;
     }
 
     return children;

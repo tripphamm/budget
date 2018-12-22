@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 import {
@@ -14,10 +14,9 @@ interface FloatingAddButtonProps {
 
 const add: React.FunctionComponent<FloatingAddButtonProps> = props => {
   return (
-    <Button
+    <Fab
       {...props}
       color="primary"
-      variant="fab"
       style={{
         position: 'fixed',
         bottom: floatingActionButtonOffsetBottom,
@@ -27,7 +26,7 @@ const add: React.FunctionComponent<FloatingAddButtonProps> = props => {
       }}
     >
       <AddIcon />
-    </Button>
+    </Fab>
   );
 };
 

@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import { History } from 'history';
 import Button from '@material-ui/core/Button';
 
-import { appBarBufferHeight } from '../settings/magicNumbers';
 import Shell from '../components/Shell';
 
-import { logInUserViaFacebook } from '../state/asyncActions';
+import { logInUserViaFacebook } from '../state/asyncActionCreators';
 
 interface SignInProps {
   logInUserViaFacebook: () => (dispatch: Dispatch) => void;
@@ -19,7 +18,7 @@ class SignIn extends React.Component<SignInProps, {}> {
       <Shell>
         <div
           style={{
-            height: `calc(100vh - ${appBarBufferHeight}px)`,
+            height: '100%',
             width: '100vw',
             display: 'flex',
             justifyContent: 'center',
@@ -34,6 +33,7 @@ class SignIn extends React.Component<SignInProps, {}> {
             style={{
               backgroundColor: '#3B5998', // facebook color
               color: 'white',
+              maxWidth: 400,
             }}
           >
             Log in with Facebook

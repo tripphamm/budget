@@ -4,6 +4,7 @@ import UploadState from './enums/UploadState';
 interface BudgeState {
   user: BudgeUser | null;
   setUserError: Error | null;
+  saveUserError: Error | null;
   authenticating: boolean;
   sideDrawerOpen: boolean;
   uploads: {
@@ -18,10 +19,14 @@ interface BudgeAvatar {
 
 interface BudgeUser {
   id: string;
-  fbDisplayName: string;
-  isNew: boolean;
+
+  persistedDisplayName: string | null;
+  persistedAvatar: BudgeAvatar | null;
+  persistedTheme: string | null;
+
   displayName: string | null;
   avatar: BudgeAvatar | null;
+  theme: string | null;
 }
 
 interface BudgeUpload {
@@ -29,4 +34,10 @@ interface BudgeUpload {
   error?: Error;
   progress: number;
   state: UploadState;
+}
+
+interface UserDocument {
+  displayName: string | null;
+  avatar: BudgeAvatar | null;
+  theme: string | null;
 }

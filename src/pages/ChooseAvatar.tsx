@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { History } from 'history';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import Shell from '../components/Shell';
-import { SetUserDisplayNameAction, SetUserAvatarAction } from '../state/actions';
-import { setUserDisplayName, setUserAvatar } from '../state/actionCreators';
+import { SetUserAvatarAction } from '../state/actions';
+import { setUserAvatar } from '../state/actionCreators';
+import { saveUser } from '../state/asyncActionCreators';
 import { getImageSrcByUnicodeOrShortName } from '../utils/emojiUtil';
 import { BudgeAvatar, BudgeUser, BudgeState } from '../budge-app-env';
 import AvatarType from '../enums/AvatarType';
@@ -60,30 +59,22 @@ const avatars = [
   ':raccoon:',
 ];
 
-type WelcomeProps = RouteComponentProps & {
+type ChooseAvatarProps = RouteComponentProps & {
   user: BudgeUser | null;
-  setUserDisplayName: (name: string) => SetUserDisplayNameAction;
   setUserAvatar: (avatar: BudgeAvatar) => SetUserAvatarAction;
+  saveUser: () => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
 };
 
-class Welcome extends React.Component<WelcomeProps, {}> {
+class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
   render() {
-    const { user, setUserAvatar, setUserDisplayName } = this.props;
+    const { user, setUserAvatar, saveUser } = this.props;
 
     if (user === null) {
-      throw new Error('`user` must be non-null to render Welcome component');
+      throw new Error('`user` must be non-null to render ChooseAvatar component');
     }
 
     return (
-      <Shell title="Welcome to Budge">
-        <Typography variant="h2">Welcome</Typography>
-        <Typography>What should we call you?</Typography>
-        <TextField
-          label="Name"
-          value={user.displayName ? user.displayName : ''}
-          onChange={event => setUserDisplayName(event.target.value)}
-        />
-        <Typography>Choose a mascot</Typography>
+      <Shell title="Choose an avatar" bottomAction="Save" bottomActionOnClick={saveUser}>
         <div
           style={{
             display: 'flex',
@@ -132,7 +123,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators(
     {
       setUserAvatar,
-      setUserDisplayName,
+      saveUser,
     },
     dispatch,
   );
@@ -142,5 +133,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-  )(Welcome),
+  )(ChooseAvatar),
 );

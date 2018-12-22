@@ -3,38 +3,40 @@ import { auth, firestore, facebookAuthProvider } from '../services/firebaseServi
 import {
   setUserSuccess,
   setUserFailure,
+  saveUserSuccess,
+  saveUserFailure,
   toggleAuthenticating,
   toggleSaving,
 } from './actionCreators';
-import { BudgeUser, BudgeAvatar } from '../budge-app-env';
-import { DocumentSnapshot } from '@firebase/firestore-types';
+import { UserDocument, BudgeState } from '../budge-app-env';
 
 type VoidFunction = () => void;
 let unobserveAuthStateChanged: VoidFunction | null = null;
-
-type UserDocumentSnapshot = DocumentSnapshot & {
-  displayName: string;
-  avatar: BudgeAvatar;
-};
 
 export function observeAuthState() {
   return (dispatch: Dispatch) => {
     // if there is already an unObserve function, then we're already subscribed
     if (!unobserveAuthStateChanged) {
       // auth.onAuthStateChanged returns the unsubscribe function
-      unobserveAuthStateChanged = auth.onAuthStateChanged(async user => {
-        if (user) {
-          const budgeUser = await (firestore.doc(`users/${user.uid}`).get() as Promise<
-            UserDocumentSnapshot
-          >);
+      unobserveAuthStateChanged = auth.onAuthStateChanged(async firebaseUser => {
+        if (firebaseUser) {
+          const userDocumentSnapshot = await firestore.doc(`users/${firebaseUser.uid}`).get();
+
+          const userDocument = userDocumentSnapshot.exists
+            ? (userDocumentSnapshot.data() as UserDocument)
+            : null;
 
           dispatch(
             setUserSuccess({
-              id: user.uid,
-              fbDisplayName: user.displayName === null ? 'New User' : user.displayName,
-              isNew: !budgeUser.exists,
-              displayName: budgeUser.exists ? budgeUser.displayName : user.displayName, // default to fb display name
-              avatar: budgeUser.exists ? budgeUser.avatar : null,
+              id: firebaseUser.uid,
+              persistedDisplayName: userDocument ? userDocument.displayName : null,
+              persistedAvatar: userDocument ? userDocument.avatar : null,
+              persistedTheme: userDocument ? userDocument.theme : null,
+
+              // default to firebase display name
+              displayName: userDocument ? userDocument.displayName : firebaseUser.displayName,
+              avatar: userDocument ? userDocument.avatar : null,
+              theme: userDocument ? userDocument.theme : null,
             }),
           );
         } else {
@@ -78,11 +80,30 @@ export function logOutUser() {
   };
 }
 
-export function saveUser(user: BudgeUser) {
-  return async (dispatch: Dispatch) => {
+export function saveUser() {
+  return async (dispatch: Dispatch, getState: () => BudgeState) => {
     dispatch(toggleSaving(true));
 
-    await firestore.doc(`users/${user.id}`).update(user);
+    try {
+      const stateSnapshot = getState();
+      const { user } = stateSnapshot;
+
+      if (user === null) {
+        throw new Error('null `user` may not be saved');
+      }
+
+      const userDocument = {
+        displayName: user.displayName,
+        avatar: user.avatar,
+        theme: user.theme,
+      };
+
+      await firestore.doc(`users/${user.id}`).set(userDocument);
+
+      dispatch(saveUserSuccess(userDocument));
+    } catch (error) {
+      dispatch(saveUserFailure(error));
+    }
 
     dispatch(toggleSaving(false));
   };

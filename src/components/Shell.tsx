@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import PersonIcon from '@material-ui/icons/Person';
 import ReceiptIcon from '@material-ui/icons/Receipt';
@@ -23,6 +24,8 @@ type ShellProps = RouteComponentProps & {
   onLeftIconButtonClick?: () => void;
   iconElementRight?: JSX.Element;
   onRightIconButtonClick?: () => void;
+  bottomAction?: string;
+  bottomActionOnClick?: () => void;
 };
 
 class Shell extends React.Component<ShellProps, {}> {
@@ -34,6 +37,8 @@ class Shell extends React.Component<ShellProps, {}> {
       onLeftIconButtonClick,
       iconElementRight,
       onRightIconButtonClick,
+      bottomAction,
+      bottomActionOnClick,
       children,
       history,
       match,
@@ -89,8 +94,7 @@ class Shell extends React.Component<ShellProps, {}> {
             </IconButton>
           </Toolbar>
         </AppBar>
-        {// render SideDrawer only if there's a user logged in
-        user !== null && <SideDrawer />}
+        {user !== null && <SideDrawer />}
         <div
           style={{
             // set the size of the viewport (between the app bar and bottom nav)
@@ -101,20 +105,34 @@ class Shell extends React.Component<ShellProps, {}> {
           {children}
         </div>
         {/* Add an element that's the same size as the bottom nav so that content won't get blocked */}
-        <div style={{ height: bottomNavHeight }} />
-        <BottomNavigation
-          value={selectedBottomNavValue}
-          onChange={bottomNavOnChange}
-          style={{
-            width: '100vw',
-            position: 'absolute',
-            bottom: 0,
-          }}
-        >
-          <BottomNavigationAction label="Profile" value="profile" icon={<PersonIcon />} />
-          <BottomNavigationAction label="Expenses" value="expenses" icon={<ReceiptIcon />} />
-          <BottomNavigationAction label="Trends" value="trends" icon={<AssessmentIcon />} />
-        </BottomNavigation>
+        {bottomAction && (
+          <Button
+            fullWidth
+            variant="contained"
+            style={{ height: bottomNavHeight, backgroundColor: 'green', color: 'white' }}
+            onClick={bottomActionOnClick}
+          >
+            {bottomAction}
+          </Button>
+        )}
+        {!bottomAction && (
+          <div>
+            <div style={{ height: bottomNavHeight }} />
+            <BottomNavigation
+              value={selectedBottomNavValue}
+              onChange={bottomNavOnChange}
+              style={{
+                width: '100vw',
+                position: 'absolute',
+                bottom: 0,
+              }}
+            >
+              <BottomNavigationAction label="Profile" value="profile" icon={<PersonIcon />} />
+              <BottomNavigationAction label="Expenses" value="expenses" icon={<ReceiptIcon />} />
+              <BottomNavigationAction label="Trends" value="trends" icon={<AssessmentIcon />} />
+            </BottomNavigation>
+          </div>
+        )}
       </div>
     );
   }

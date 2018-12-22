@@ -1,6 +1,6 @@
-import ActionType from '../enums/ActionType';
+import ActionType from './ActionType';
 import UploadState from '../enums/UploadState';
-import { BudgeAvatar, BudgeUser } from '../budge-app-env';
+import { BudgeAvatar, BudgeUser, UserDocument } from '../budge-app-env';
 import {
   ToggleSideDrawerOpenAction,
   ToggleAuthenticatingAction,
@@ -14,20 +14,20 @@ import {
   FailUploadAction,
   SetUserDisplayNameAction,
   SetUserAvatarAction,
+  SaveUserSuccessAction,
+  SaveUserFailureAction,
+  ClearSaveUserErrorAction,
+  SetUserThemeAction,
 } from './actions';
 
-export function toggleSideDrawerOpen(
-  open?: boolean,
-): ToggleSideDrawerOpenAction {
+export function toggleSideDrawerOpen(open?: boolean): ToggleSideDrawerOpenAction {
   return {
     type: ActionType.TOGGLE_SIDE_DRAWER_OPEN,
     open,
   };
 }
 
-export function toggleAuthenticating(
-  authenticating: boolean,
-): ToggleAuthenticatingAction {
+export function toggleAuthenticating(authenticating: boolean): ToggleAuthenticatingAction {
   return {
     type: ActionType.TOGGLE_AUTHENTICATING,
     authenticating,
@@ -58,6 +58,26 @@ export function setUserFailure(error: Error): SetUserFailureAction {
 export function clearSetUserError(): ClearSetUserErrorAction {
   return {
     type: ActionType.CLEAR_SET_USER_ERROR,
+  };
+}
+
+export function saveUserSuccess(userDocument: UserDocument): SaveUserSuccessAction {
+  return {
+    type: ActionType.SAVE_USER_SUCCESS,
+    userDocument,
+  };
+}
+
+export function saveUserFailure(error: Error): SaveUserFailureAction {
+  return {
+    type: ActionType.SAVE_USER_FAILURE,
+    error,
+  };
+}
+
+export function clearSaveUserError(): ClearSaveUserErrorAction {
+  return {
+    type: ActionType.CLEAR_SAVE_USER_ERROR,
   };
 }
 
@@ -96,9 +116,7 @@ export function failUpload(uploadId: string, error: Error): FailUploadAction {
   };
 }
 
-export function setUserDisplayName(
-  displayName: string,
-): SetUserDisplayNameAction {
+export function setUserDisplayName(displayName: string): SetUserDisplayNameAction {
   return {
     type: ActionType.SET_USER_DISPLAY_NAME,
     displayName,
@@ -109,5 +127,12 @@ export function setUserAvatar(avatar: BudgeAvatar): SetUserAvatarAction {
   return {
     type: ActionType.SET_USER_AVATAR,
     avatar,
+  };
+}
+
+export function setUserTheme(theme: string): SetUserThemeAction {
+  return {
+    type: ActionType.SET_USER_THEME,
+    theme,
   };
 }

@@ -9,14 +9,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { toggleSideDrawerOpen } from '../state/actionCreators';
-import { logOutUser } from '../state/asyncActions';
+import { logOutUser } from '../state/asyncActionCreators';
 import Avatar from './Avatar';
-import { BudgeAvatar, BudgeUser, BudgeState } from '../budge-app-env';
-import {
-  SetUserDisplayNameAction,
-  SetUserAvatarAction,
-  ToggleSideDrawerOpenAction,
-} from '../state/actions';
+import { BudgeUser, BudgeState } from '../budge-app-env';
+import { ToggleSideDrawerOpenAction } from '../state/actions';
 
 const avatars = [
   ':dog:',
