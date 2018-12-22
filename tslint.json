@@ -1,4 +1,7 @@
 {
-  "extends": ["tslint-config-airbnb", "tslint-react"],
-  "rules": {}
+  "extends": ["tslint-config-airbnb", "tslint-config-prettier"],
+  "rules": {
+    "object-shorthand-properties-first": false,
+    "import-name": false
+  }
 }
