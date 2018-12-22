@@ -1,12 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { Provider as ReduxStoreProvider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import { getStore } from './state/store';
+import initialState from './state/initialState';
+import Routes from './Routes';
+import UserGate from './UserGate';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
+});
+
+ReactDOM.render(
+  <ReduxStoreProvider store={getStore(initialState)}>
+    <MuiThemeProvider theme={theme}>
+      <BrowserRouter>
+        <UserGate>
+          <Routes />
+        </UserGate>
+      </BrowserRouter>
+    </MuiThemeProvider>
+  </ReduxStoreProvider>,
+  document.getElementById('root'),
+);
