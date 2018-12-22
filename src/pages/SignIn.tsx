@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { History } from 'history';
 import Button from '@material-ui/core/Button';
 
 import Shell from '../components/Shell';
@@ -14,8 +13,10 @@ interface SignInProps {
 
 class SignIn extends React.Component<SignInProps, {}> {
   render() {
+    const { logInUserViaFacebook } = this.props;
+
     return (
-      <Shell bottomBarElement={null}>
+      <Shell bottomBarElement={null} renderSideDrawer={false}>
         <div
           style={{
             height: '100%',

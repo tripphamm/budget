@@ -77,6 +77,7 @@ class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
     return (
       <Shell
         title="Choose an avatar"
+        renderSideDrawer={false}
         bottomBarElement={
           <BottomAction
             label="Save"

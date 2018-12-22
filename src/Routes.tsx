@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 
 import AddExpense from './pages/AddExpense';
 import EditExpense from './pages/EditExpense';
@@ -11,6 +10,9 @@ import Bills from './pages/Bills';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
+import ChooseAvatar from './pages/ChooseAvatar';
+import ChooseTheme from './pages/ChooseTheme';
+import ChooseName from './pages/ChooseName';
 
 const routes: React.FunctionComponent = () => {
   return (
@@ -18,6 +20,9 @@ const routes: React.FunctionComponent = () => {
       <Route exact path="/" component={Home} />
 
       <Route exact path="/profile" component={Profile} />
+      <Route exact path="/chooseName" component={ChooseName} />
+      <Route exact path="/chooseAvatar" component={ChooseAvatar} />
+      <Route exact path="/chooseTheme" component={ChooseTheme} />
 
       <Route exact path="/newBill" component={AddBill} />
       <Route exact path="/bills" component={Bills} />

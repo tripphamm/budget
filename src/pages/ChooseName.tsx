@@ -29,6 +29,7 @@ class ChooseName extends React.Component<ChooseNameProps, {}> {
     return (
       <Shell
         title="Choose a name"
+        renderSideDrawer={false}
         bottomBarElement={
           <BottomAction
             label="Save"
@@ -38,11 +39,22 @@ class ChooseName extends React.Component<ChooseNameProps, {}> {
           />
         }
       >
-        <TextField
-          label="Name"
-          value={user.displayName ? user.displayName : ''}
-          onChange={event => setUserDisplayName(event.target.value)}
-        />
+        <div
+          style={{
+            height: '100%',
+            width: '100vw',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <TextField
+            label="Name"
+            value={user.displayName ? user.displayName : ''}
+            onChange={event => setUserDisplayName(event.target.value)}
+          />
+        </div>
       </Shell>
     );
   }

@@ -30,6 +30,7 @@ class ChooseTheme extends React.Component<ChooseThemeProps, {}> {
     return (
       <Shell
         title="Choose a theme color"
+        renderSideDrawer={false}
         bottomBarElement={
           <BottomAction
             label="Save"

@@ -1,29 +1,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider as ReduxStoreProvider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { getStore } from './state/store';
 import initialState from './state/initialState';
-import Routes from './Routes';
-import UserGate from './UserGate';
-
-const theme = createMuiTheme({
-  typography: {
-    useNextVariants: true,
-  },
-});
+import App from './App';
 
 ReactDOM.render(
   <ReduxStoreProvider store={getStore(initialState)}>
-    <MuiThemeProvider theme={theme}>
-      <UserGate>
-        <BrowserRouter>
-          <Routes />
-        </BrowserRouter>
-      </UserGate>
-    </MuiThemeProvider>
+    <App />
   </ReduxStoreProvider>,
   document.getElementById('root'),
 );

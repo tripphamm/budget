@@ -12,20 +12,20 @@ import { appBarHeight, bottomNavHeight } from '../settings/magicNumbers';
 import { BudgeState, BudgeUser } from '../budge-app-env';
 
 interface ShellProps {
-  user: BudgeUser | null;
   title?: string;
   iconElementLeft?: JSX.Element;
   onLeftIconButtonClick?: () => void;
   iconElementRight?: JSX.Element;
   onRightIconButtonClick?: () => void;
   bottomBarElement?: JSX.Element | null;
+  renderSideDrawer?: boolean;
 }
 
 class Shell extends React.Component<ShellProps, {}> {
   render() {
     const {
-      user,
       title = 'Budge',
+      renderSideDrawer = true,
       iconElementLeft,
       onLeftIconButtonClick,
       iconElementRight,
@@ -55,7 +55,7 @@ class Shell extends React.Component<ShellProps, {}> {
             </IconButton>
           </Toolbar>
         </AppBar>
-        {user !== null && <SideDrawer />}
+        {renderSideDrawer && <SideDrawer />}
         <div
           style={{
             // set the size of the viewport (between the app bar and bottom nav)
@@ -65,8 +65,6 @@ class Shell extends React.Component<ShellProps, {}> {
         >
           {children}
         </div>
-        {/* Add an element that's the same size as the bottom bar so that content won't get blocked */}
-        <div style={{ height: bottomNavHeight }} />
         {bottomBarElement}
       </div>
     );
@@ -74,9 +72,7 @@ class Shell extends React.Component<ShellProps, {}> {
 }
 
 function mapStateToProps(state: BudgeState) {
-  return {
-    user: state.user,
-  };
+  return {};
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
