@@ -5,17 +5,18 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import Shell from '../components/Shell';
+import BottomAction from '../components/BottomAction';
+
 import { SetUserDisplayNameAction } from '../state/actions';
 import { setUserDisplayName } from '../state/actionCreators';
 import { saveUser } from '../state/asyncActionCreators';
 import { BudgeUser, BudgeState } from '../budge-app-env';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-type ChooseNameProps = RouteComponentProps & {
+interface ChooseNameProps {
   user: BudgeUser | null;
   setUserDisplayName: (name: string) => SetUserDisplayNameAction;
   saveUser: () => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
-};
+}
 
 class ChooseName extends React.Component<ChooseNameProps, {}> {
   render() {
@@ -26,7 +27,17 @@ class ChooseName extends React.Component<ChooseNameProps, {}> {
     }
 
     return (
-      <Shell title="Choose a name" bottomAction="Save" bottomActionOnClick={saveUser}>
+      <Shell
+        title="Choose a name"
+        bottomBarElement={
+          <BottomAction
+            label="Save"
+            labelColor="white"
+            backgroundColor="green"
+            onClick={saveUser}
+          />
+        }
+      >
         <TextField
           label="Name"
           value={user.displayName ? user.displayName : ''}
@@ -53,9 +64,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   );
 }
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(ChooseName),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ChooseName);

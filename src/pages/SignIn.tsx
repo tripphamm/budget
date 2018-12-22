@@ -15,7 +15,7 @@ interface SignInProps {
 class SignIn extends React.Component<SignInProps, {}> {
   render() {
     return (
-      <Shell>
+      <Shell bottomBarElement={null}>
         <div
           style={{
             height: '100%',

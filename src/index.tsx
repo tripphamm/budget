@@ -18,11 +18,11 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <ReduxStoreProvider store={getStore(initialState)}>
     <MuiThemeProvider theme={theme}>
-      <BrowserRouter>
-        <UserGate>
+      <UserGate>
+        <BrowserRouter>
           <Routes />
-        </UserGate>
-      </BrowserRouter>
+        </BrowserRouter>
+      </UserGate>
     </MuiThemeProvider>
   </ReduxStoreProvider>,
   document.getElementById('root'),

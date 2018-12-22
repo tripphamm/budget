@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 
 import Shell from '../components/Shell';
+import BottomAction from '../components/BottomAction';
+
 import { SetUserAvatarAction } from '../state/actions';
 import { setUserAvatar } from '../state/actionCreators';
 import { saveUser } from '../state/asyncActionCreators';
 import { getImageSrcByUnicodeOrShortName } from '../utils/emojiUtil';
 import { BudgeAvatar, BudgeUser, BudgeState } from '../budge-app-env';
 import AvatarType from '../enums/AvatarType';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 const avatars = [
   ':dog:',
@@ -59,11 +60,11 @@ const avatars = [
   ':raccoon:',
 ];
 
-type ChooseAvatarProps = RouteComponentProps & {
+interface ChooseAvatarProps {
   user: BudgeUser | null;
   setUserAvatar: (avatar: BudgeAvatar) => SetUserAvatarAction;
   saveUser: () => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
-};
+}
 
 class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
   render() {
@@ -74,7 +75,17 @@ class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
     }
 
     return (
-      <Shell title="Choose an avatar" bottomAction="Save" bottomActionOnClick={saveUser}>
+      <Shell
+        title="Choose an avatar"
+        bottomBarElement={
+          <BottomAction
+            label="Save"
+            labelColor="white"
+            backgroundColor="green"
+            onClick={saveUser}
+          />
+        }
+      >
         <div
           style={{
             display: 'flex',
@@ -129,9 +140,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   );
 }
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(ChooseAvatar),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ChooseAvatar);

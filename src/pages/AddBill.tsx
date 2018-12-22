@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import Shell from '../components/Shell';
+import BottomNav from '../components/BottomNav';
 
 import { toggleSideDrawerOpen } from '../state/actionCreators';
 import { ToggleSideDrawerOpenAction } from '../state/actions';

@@ -4,17 +4,18 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 
 import Shell from '../components/Shell';
+import BottomAction from '../components/BottomAction';
+
 import { SetUserThemeAction } from '../state/actions';
 import { setUserTheme } from '../state/actionCreators';
 import { saveUser } from '../state/asyncActionCreators';
 import { BudgeUser, BudgeState } from '../budge-app-env';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-type ChooseThemeProps = RouteComponentProps & {
+interface ChooseThemeProps {
   user: BudgeUser | null;
   setUserTheme: (name: string) => SetUserThemeAction;
   saveUser: () => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
-};
+}
 
 const colors = ['red', 'blue', 'green', 'black'];
 
@@ -27,7 +28,17 @@ class ChooseTheme extends React.Component<ChooseThemeProps, {}> {
     }
 
     return (
-      <Shell title="Choose a theme color" bottomAction="Save" bottomActionOnClick={saveUser}>
+      <Shell
+        title="Choose a theme color"
+        bottomBarElement={
+          <BottomAction
+            label="Save"
+            labelColor="white"
+            backgroundColor="green"
+            onClick={saveUser}
+          />
+        }
+      >
         <div
           style={{
             display: 'flex',
@@ -80,9 +91,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   );
 }
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(ChooseTheme),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ChooseTheme);

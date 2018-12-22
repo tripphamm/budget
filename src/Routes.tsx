@@ -14,24 +14,21 @@ import NotFound from './pages/NotFound';
 
 const routes: React.FunctionComponent = () => {
   return (
-    <>
-      <Switch>
-        <Route exact path="/" component={Home} />
+    <Switch>
+      <Route exact path="/" component={Home} />
 
-        <Route exact path="/profile" component={Profile} />
+      <Route exact path="/profile" component={Profile} />
 
-        <Route exact path="/newBill" component={AddBill} />
-        <Route exact path="/bills" component={Bills} />
-        <Route path="/bills/:billId" component={EditBill} />
+      <Route exact path="/newBill" component={AddBill} />
+      <Route exact path="/bills" component={Bills} />
+      <Route path="/bills/:billId" component={EditBill} />
 
-        <Route exact path="/newExpense" component={AddExpense} />
-        <Route exact path="/expenses" component={Expenses} />
-        <Route path="/expenses/:expenseId" component={EditExpense} />
+      <Route exact path="/newExpense" component={AddExpense} />
+      <Route exact path="/expenses" component={Expenses} />
+      <Route path="/expenses/:expenseId" component={EditExpense} />
 
-        <Route path="*" component={NotFound} />
-      </Switch>
-      <ToastContainer position="bottom-center" />
-    </>
+      <Route path="*" component={NotFound} />
+    </Switch>
   );
 };
 
