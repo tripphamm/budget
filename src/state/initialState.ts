@@ -7,6 +7,10 @@ const initialState: BudgeState = {
   authenticating: false,
   sideDrawerOpen: false,
   uploads: {},
+  bills: {},
+  saveBillErrors: {},
+  expenses: {},
+  saveExpenseErrors: {},
 };
 
 export default initialState;

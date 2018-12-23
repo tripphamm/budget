@@ -1,6 +1,6 @@
 import ActionType from './ActionType';
 import UploadState from '../enums/UploadState';
-import { BudgeAvatar, BudgeUser, UserDocument } from '../budge-app-env';
+import { BudgeIcon, BudgeUser, UserDocument, BudgeBill, BudgeExpense } from '../budge-app-env';
 import {
   ToggleSideDrawerOpenAction,
   ToggleAuthenticatingAction,
@@ -18,6 +18,12 @@ import {
   SaveUserFailureAction,
   ClearSaveUserErrorAction,
   SetUserThemeAction,
+  SaveBillSuccessAction,
+  SaveBillFailureAction,
+  ClearSaveBillErrorAction,
+  SaveExpenseSuccessAction,
+  SaveExpenseFailureAction,
+  ClearSaveExpenseErrorAction,
 } from './actions';
 
 export function toggleSideDrawerOpen(open?: boolean): ToggleSideDrawerOpenAction {
@@ -81,6 +87,50 @@ export function clearSaveUserError(): ClearSaveUserErrorAction {
   };
 }
 
+export function saveBillSuccess(bill: BudgeBill): SaveBillSuccessAction {
+  return {
+    type: ActionType.SAVE_BILL_SUCCESS,
+    bill,
+  };
+}
+
+export function saveBillFailure(id: string, error: Error): SaveBillFailureAction {
+  return {
+    type: ActionType.SAVE_BILL_FAILURE,
+    id,
+    error,
+  };
+}
+
+export function clearSaveBillError(id: string): ClearSaveBillErrorAction {
+  return {
+    type: ActionType.CLEAR_SAVE_BILL_ERROR,
+    id,
+  };
+}
+
+export function saveExpenseSuccess(expense: BudgeExpense): SaveExpenseSuccessAction {
+  return {
+    type: ActionType.SAVE_EXPENSE_SUCCESS,
+    expense,
+  };
+}
+
+export function saveExpenseFailure(id: string, error: Error): SaveExpenseFailureAction {
+  return {
+    type: ActionType.SAVE_EXPENSE_FAILURE,
+    id,
+    error,
+  };
+}
+
+export function clearSaveExpenseError(id: string): ClearSaveExpenseErrorAction {
+  return {
+    type: ActionType.CLEAR_SAVE_EXPENSE_ERROR,
+    id,
+  };
+}
+
 export function startUpload(uploadId: string): StartUploadAction {
   return {
     type: ActionType.START_UPLOAD,
@@ -123,7 +173,7 @@ export function setUserDisplayName(displayName: string): SetUserDisplayNameActio
   };
 }
 
-export function setUserAvatar(avatar: BudgeAvatar): SetUserAvatarAction {
+export function setUserAvatar(avatar: BudgeIcon): SetUserAvatarAction {
   return {
     type: ActionType.SET_USER_AVATAR,
     avatar,

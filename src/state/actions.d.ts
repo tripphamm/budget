@@ -1,6 +1,13 @@
 import ActionType from './ActionType';
 import UploadState from '../enums/UploadState';
-import { BudgeAvatar, BudgeUser, UserDocument, BudgeState } from '../budge-app-env';
+import {
+  BudgeIcon,
+  BudgeUser,
+  UserDocument,
+  BudgeState,
+  BudgeBill,
+  BudgeExpense,
+} from '../budge-app-env';
 import { Dispatch } from 'redux';
 
 type AnyAction =
@@ -10,6 +17,12 @@ type AnyAction =
   | SaveUserSuccessAction
   | SaveUserFailureAction
   | ClearSaveUserErrorAction
+  | SaveBillSuccessAction
+  | SaveBillFailureAction
+  | ClearSaveBillErrorAction
+  | SaveExpenseSuccessAction
+  | SaveExpenseFailureAction
+  | ClearSaveExpenseErrorAction
   | ToggleSideDrawerOpenAction
   | ToggleAuthenticatingAction
   | ToggleSavingAction
@@ -64,6 +77,38 @@ interface ClearSaveUserErrorAction {
   type: ActionType.CLEAR_SAVE_USER_ERROR;
 }
 
+interface SaveBillSuccessAction {
+  type: ActionType.SAVE_BILL_SUCCESS;
+  bill: BudgeBill;
+}
+
+interface SaveBillFailureAction {
+  type: ActionType.SAVE_BILL_FAILURE;
+  id: string;
+  error: Error;
+}
+
+interface ClearSaveBillErrorAction {
+  type: ActionType.CLEAR_SAVE_BILL_ERROR;
+  id: string;
+}
+
+interface SaveExpenseSuccessAction {
+  type: ActionType.SAVE_EXPENSE_SUCCESS;
+  expense: BudgeExpense;
+}
+
+interface SaveExpenseFailureAction {
+  type: ActionType.SAVE_EXPENSE_FAILURE;
+  id: string;
+  error: Error;
+}
+
+interface ClearSaveExpenseErrorAction {
+  type: ActionType.CLEAR_SAVE_EXPENSE_ERROR;
+  id: string;
+}
+
 interface StartUploadAction {
   type: ActionType.START_UPLOAD;
   uploadId: string;
@@ -94,7 +139,7 @@ interface SetUserDisplayNameAction {
 
 interface SetUserAvatarAction {
   type: ActionType.SET_USER_AVATAR;
-  avatar: BudgeAvatar;
+  avatar: BudgeIcon;
 }
 
 interface SetUserThemeAction {

@@ -11,8 +11,8 @@ import { SetUserAvatarAction, SaveUserActionCreator } from '../state/actions';
 import { setUserAvatar } from '../state/actionCreators';
 import { saveUser } from '../state/asyncActionCreators';
 import { getImageSrcByUnicodeOrShortName } from '../utils/emojiUtil';
-import { BudgeAvatar, BudgeUser, BudgeState } from '../budge-app-env';
-import AvatarType from '../enums/AvatarType';
+import { BudgeIcon, BudgeUser, BudgeState } from '../budge-app-env';
+import IconType from '../enums/IconType';
 import { RouteComponentProps } from 'react-router';
 
 const avatars = [
@@ -65,7 +65,7 @@ const avatars = [
 type ChooseAvatarProps = RouteComponentProps & {
   theme: Theme;
   user: BudgeUser | null;
-  setUserAvatar: (avatar: BudgeAvatar) => SetUserAvatarAction;
+  setUserAvatar: (avatar: BudgeIcon) => SetUserAvatarAction;
   saveUser: SaveUserActionCreator;
 };
 
@@ -104,13 +104,13 @@ class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
           {avatars.map(emojiShortName => {
             const selected =
               user.avatar &&
-              user.avatar.type === AvatarType.EMOJI &&
+              user.avatar.type === IconType.EMOJI &&
               user.avatar.value === emojiShortName;
 
             return (
               <button
                 type="button"
-                onClick={() => setUserAvatar({ type: AvatarType.EMOJI, value: emojiShortName })}
+                onClick={() => setUserAvatar({ type: IconType.EMOJI, value: emojiShortName })}
                 key={`avatar-option-${emojiShortName}`}
                 style={{
                   background: 'unset',

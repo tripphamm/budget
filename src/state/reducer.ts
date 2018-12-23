@@ -45,6 +45,54 @@ export default (state: BudgeState = initialState, action: AnyAction): BudgeState
         ...state,
         saveUserError: null,
       };
+    case ActionType.SAVE_BILL_SUCCESS:
+      return {
+        ...state,
+        bills: {
+          ...state.bills,
+          [action.bill.id as string]: action.bill,
+        },
+      };
+    case ActionType.SAVE_BILL_FAILURE:
+      return {
+        ...state,
+        saveBillErrors: {
+          ...state.saveBillErrors,
+          [action.id]: action.error,
+        },
+      };
+    case ActionType.CLEAR_SAVE_BILL_ERROR:
+      return {
+        ...state,
+        saveBillErrors: {
+          ...state.saveBillErrors,
+          [action.id]: null,
+        },
+      };
+    case ActionType.SAVE_EXPENSE_SUCCESS:
+      return {
+        ...state,
+        expenses: {
+          ...state.expenses,
+          [action.expense.id as string]: action.expense,
+        },
+      };
+    case ActionType.SAVE_EXPENSE_FAILURE:
+      return {
+        ...state,
+        saveExpenseErrors: {
+          ...state.saveExpenseErrors,
+          [action.id]: action.error,
+        },
+      };
+    case ActionType.CLEAR_SAVE_EXPENSE_ERROR:
+      return {
+        ...state,
+        saveExpenseErrors: {
+          ...state.saveExpenseErrors,
+          [action.id]: null,
+        },
+      };
     case ActionType.TOGGLE_AUTHENTICATING:
       return {
         ...state,
