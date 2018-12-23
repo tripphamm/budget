@@ -2,7 +2,8 @@ import * as React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-import AssessmentIcon from '@material-ui/icons/Assessment';
+// import AssessmentIcon from '@material-ui/icons/Assessment'; // "trends"
+import TodayIcon from '@material-ui/icons/Today';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
@@ -17,8 +18,8 @@ class BottomNav extends React.Component<RouteComponentProps, {}> {
       selectedBottomNavValue = 'profile';
     } else if (url.includes('expenses')) {
       selectedBottomNavValue = 'expenses';
-    } else if (url.includes('trends')) {
-      selectedBottomNavValue = 'trends';
+    } else if (url.includes('bills')) {
+      selectedBottomNavValue = 'bills';
     } else {
       selectedBottomNavValue = 'expenses';
     }
@@ -31,8 +32,8 @@ class BottomNav extends React.Component<RouteComponentProps, {}> {
         case 'expenses':
           history.push('/expenses');
           break;
-        case 'trends':
-          history.push('/trends');
+        case 'bills':
+          history.push('/bills');
           break;
         default:
           throw new Error(`Unrecognized navigation: ${pageKey}`);
@@ -51,7 +52,7 @@ class BottomNav extends React.Component<RouteComponentProps, {}> {
       >
         <BottomNavigationAction label="Profile" value="profile" icon={<PersonIcon />} />
         <BottomNavigationAction label="Expenses" value="expenses" icon={<ReceiptIcon />} />
-        <BottomNavigationAction label="Trends" value="trends" icon={<AssessmentIcon />} />
+        <BottomNavigationAction label="Bills" value="bills" icon={<TodayIcon />} />
       </BottomNavigation>
     );
   }

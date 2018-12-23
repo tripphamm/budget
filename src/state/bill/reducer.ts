@@ -29,6 +29,24 @@ export default (state: BillState = initialState, action: AnyBillAction): BillSta
           [action.id]: null,
         },
       };
+    case ActionType.FETCH_BILLS_SUCCESS:
+      return {
+        ...state,
+        bills: {
+          ...state.bills,
+          ...action.bills,
+        },
+      };
+    case ActionType.FETCH_BILLS_FAILURE:
+      return {
+        ...state,
+        fetchBillsError: action.error,
+      };
+    case ActionType.CLEAR_FETCH_BILLS_ERROR:
+      return {
+        ...state,
+        fetchBillsError: null,
+      };
     default:
       return state;
   }

@@ -16,7 +16,7 @@ const add: React.FunctionComponent<FloatingAddButtonProps> = props => {
   return (
     <Fab
       {...props}
-      color="primary"
+      color="secondary"
       style={{
         position: 'fixed',
         bottom: floatingActionButtonOffsetBottom,

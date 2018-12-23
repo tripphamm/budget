@@ -49,3 +49,8 @@ type SaveBillActionCreator = (
   bill: BudgeBill,
   onSaveComplete?: () => void,
 ) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
+
+type FetchBillsActionCreator = () => (
+  dispatch: Dispatch,
+  getState: () => BudgeState,
+) => Promise<void>;

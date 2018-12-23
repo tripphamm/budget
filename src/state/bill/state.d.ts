@@ -7,4 +7,5 @@ interface BillState {
   saveBillErrors: {
     [id: string]: Error | null;
   };
+  fetchBillsError: Error | null;
 }
