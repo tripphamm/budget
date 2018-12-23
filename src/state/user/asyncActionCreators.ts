@@ -1,18 +1,9 @@
 import { Dispatch } from 'redux';
-import { auth, firestore, facebookAuthProvider } from '../services/firebaseService';
-import {
-  setUserSuccess,
-  setUserFailure,
-  saveUserSuccess,
-  saveUserFailure,
-  toggleAuthenticating,
-  toggleSaving,
-  saveBillSuccess,
-  saveBillFailure,
-  saveExpenseSuccess,
-  saveExpenseFailure,
-} from './actionCreators';
-import { UserDocument, BudgeState, BudgeBill, BudgeExpense } from '../budge-app-env';
+import { auth, firestore, facebookAuthProvider } from '../../services/firebaseService';
+import { setUserSuccess, setUserFailure, saveUserSuccess, saveUserFailure } from './actionCreators';
+import { toggleAuthenticating, toggleSaving } from '../shared/actionCreators';
+import { UserDocument } from '../../budge-app-env';
+import { BudgeState } from '../rootState';
 
 type VoidFunction = () => void;
 let unobserveAuthStateChanged: VoidFunction | null = null;
@@ -90,7 +81,8 @@ export function saveUser(onSaveComplete?: () => void) {
 
     try {
       const stateSnapshot = getState();
-      const { user } = stateSnapshot;
+      const { userState } = stateSnapshot;
+      const { user } = userState;
 
       if (user === null) {
         throw new Error('null `user` may not be saved');
@@ -111,71 +103,6 @@ export function saveUser(onSaveComplete?: () => void) {
       dispatch(saveUserSuccess(userDocument));
     } catch (error) {
       dispatch(saveUserFailure(error));
-    }
-
-    dispatch(toggleSaving(false));
-  };
-}
-
-export function saveBill(bill: BudgeBill, onSaveComplete?: () => void) {
-  return async (dispatch: Dispatch, getState: () => BudgeState) => {
-    dispatch(toggleSaving(true));
-
-    try {
-      const stateSnapshot = getState();
-      const { user } = stateSnapshot;
-
-      if (user === null) {
-        throw new Error('`user` must be  non-null in order to save a bill');
-      }
-
-      const billDocument = {
-        amount: bill.amount,
-        cadence: bill.cadence,
-        icon: bill.icon,
-      };
-
-      await firestore.doc(`bills/${user.id}/${bill.id}`).set(billDocument);
-
-      if (typeof onSaveComplete === 'function') {
-        onSaveComplete();
-      }
-
-      dispatch(saveBillSuccess(bill));
-    } catch (error) {
-      dispatch(saveBillFailure(bill.id, error));
-    }
-
-    dispatch(toggleSaving(false));
-  };
-}
-
-export function saveExpense(expense: BudgeExpense, onSaveComplete?: () => void) {
-  return async (dispatch: Dispatch, getState: () => BudgeState) => {
-    dispatch(toggleSaving(true));
-
-    try {
-      const stateSnapshot = getState();
-      const { user } = stateSnapshot;
-
-      if (user === null) {
-        throw new Error('`user` must be  non-null in order to save an expense');
-      }
-
-      const expenseDocument = {
-        amount: expense.amount,
-        timestamp: expense.timestamp,
-      };
-
-      await firestore.doc(`expenses/${user.id}/${expense.id}`).set(expenseDocument);
-
-      if (typeof onSaveComplete === 'function') {
-        onSaveComplete();
-      }
-
-      dispatch(saveExpenseSuccess(expense));
-    } catch (error) {
-      dispatch(saveExpenseFailure(expense.id, error));
     }
 
     dispatch(toggleSaving(false));

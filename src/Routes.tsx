@@ -15,7 +15,8 @@ import ChooseAvatar from './pages/ChooseAvatar';
 import ChooseTheme from './pages/ChooseTheme';
 import ChooseName from './pages/ChooseName';
 import SignIn from './pages/SignIn';
-import { BudgeUser, BudgeState } from './budge-app-env';
+import { BudgeUser } from './budge-app-env';
+import { BudgeState } from './state/rootState';
 
 type RoutesProps = RouteComponentProps & {
   user: BudgeUser | null;
@@ -66,7 +67,7 @@ class Routes extends React.Component<RoutesProps> {
 
 function mapStateToProps(state: BudgeState) {
   return {
-    user: state.user,
+    user: state.userState.user,
   };
 }
 

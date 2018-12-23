@@ -10,12 +10,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
-import { BudgeState, BudgeUser } from '../budge-app-env';
+import { BudgeUser } from '../budge-app-env';
 import Shell from '../components/Shell';
 import Avatar from '../components/Avatar';
-
-import { toggleSideDrawerOpen } from '../state/actionCreators';
-import { ToggleSideDrawerOpenAction } from '../state/actions';
+import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
+import { BudgeState } from '../state/rootState';
+import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
 
 type ProfileProps = RouteComponentProps & {
   user: BudgeUser | null;
@@ -64,7 +64,7 @@ class Profile extends React.Component<ProfileProps, {}> {
 
 function mapStateToProps(state: BudgeState) {
   return {
-    user: state.user,
+    user: state.userState.user,
   };
 }
 

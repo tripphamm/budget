@@ -8,11 +8,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import { toggleSideDrawerOpen } from '../state/actionCreators';
-import { logOutUser } from '../state/asyncActionCreators';
 import Avatar from './Avatar';
-import { BudgeUser, BudgeState } from '../budge-app-env';
-import { ToggleSideDrawerOpenAction } from '../state/actions';
+import { BudgeUser } from '../budge-app-env';
+import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
+import { BudgeState } from '../state/rootState';
+import { logOutUser } from '../state/user/asyncActionCreators';
+import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
 
 type SideDrawerProps = RouteComponentProps & {
   user: BudgeUser | null;
@@ -56,8 +57,8 @@ class SideDrawer extends React.Component<SideDrawerProps, {}> {
 
 function mapStateToProps(state: BudgeState) {
   return {
-    user: state.user,
-    sideDrawerOpen: state.sideDrawerOpen,
+    user: state.userState.user,
+    sideDrawerOpen: state.sharedState.sideDrawerOpen,
   };
 }
 

@@ -1,24 +1,34 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { History } from 'history';
-import SearchIcon from '@material-ui/icons/Search';
+import { RouteComponentProps } from 'react-router';
 import MenuIcon from '@material-ui/icons/Menu';
+import { Typography, MenuList, MenuItem } from '@material-ui/core';
 
 import Shell from '../components/Shell';
 import FloatingAddButton from '../components/floatingActionButtons/Add';
 import FloatingActionButtonBuffer from '../components/floatingActionButtons/FloatingActionButtonBuffer';
 
-import { toggleSideDrawerOpen } from '../state/actionCreators';
-import { ToggleSideDrawerOpenAction } from '../state/actions';
+import { BudgeBill } from '../budge-app-env';
+import { floatingActionButtonBufferHeight } from '../settings/magicNumbers';
+import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
+import { BudgeState } from '../state/rootState';
+import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
 
-interface BillsProps {
-  history: History;
+type BillsProps = RouteComponentProps & {
+  bills: { [id: string]: BudgeBill };
+  saveBillErrors: { [id: string]: Error | null };
   toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
-}
+};
 
 class Bills extends React.Component<BillsProps, {}> {
+  componentDidMount() {}
+
   render() {
+    const { bills, saveBillErrors } = this.props;
+
+    const billIds = Object.keys(bills);
+
     return (
       <Shell
         title="Bills"
@@ -27,7 +37,28 @@ class Bills extends React.Component<BillsProps, {}> {
           this.props.toggleSideDrawerOpen();
         }}
       >
-        <div>Bills</div>
+        {billIds.length === 0 && (
+          <div
+            style={{
+              height: `calc(100% - ${floatingActionButtonBufferHeight}px`,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+            }}
+          >
+            <Typography>Nothing here yet</Typography>
+          </div>
+        )}
+        {billIds.length > 0 && (
+          <MenuList>
+            {billIds.map(id => {
+              const bill = bills[id];
+
+              return <MenuItem>{bill.name}</MenuItem>;
+            })}
+          </MenuList>
+        )}
         <FloatingActionButtonBuffer />
         <FloatingAddButton
           onClick={() => {
@@ -37,6 +68,13 @@ class Bills extends React.Component<BillsProps, {}> {
       </Shell>
     );
   }
+}
+
+function mapStateToProps(state: BudgeState) {
+  return {
+    bills: state.billState.bills,
+    saveBillErrors: state.billState.saveBillErrors,
+  };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
@@ -49,6 +87,6 @@ function mapDispatchToProps(dispatch: Dispatch) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(Bills);

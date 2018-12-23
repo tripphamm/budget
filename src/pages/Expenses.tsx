@@ -8,9 +8,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Shell from '../components/Shell';
 import FloatingAddButton from '../components/floatingActionButtons/Add';
 import FloatingActionButtonBuffer from '../components/floatingActionButtons/FloatingActionButtonBuffer';
-
-import { toggleSideDrawerOpen } from '../state/actionCreators';
-import { ToggleSideDrawerOpenAction } from '../state/actions';
+import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
+import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
 
 interface ExpensesProps {
   history: History;

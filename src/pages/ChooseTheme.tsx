@@ -7,11 +7,12 @@ import Typography from '@material-ui/core/Typography';
 import Shell from '../components/Shell';
 import BottomAction from '../components/BottomAction';
 
-import { SetUserThemeAction, SaveUserActionCreator } from '../state/actions';
-import { setUserTheme } from '../state/actionCreators';
-import { saveUser } from '../state/asyncActionCreators';
-import { BudgeUser, BudgeState } from '../budge-app-env';
+import { BudgeUser } from '../budge-app-env';
 import { themePaletteMap } from '../utils/themeUtil';
+import { SetUserThemeAction, SaveUserActionCreator } from '../state/user/actions';
+import { BudgeState } from '../state/rootState';
+import { setUserTheme } from '../state/user/actionCreators';
+import { saveUser } from '../state/user/asyncActionCreators';
 
 type ChooseThemeProps = RouteComponentProps & {
   user: BudgeUser | null;
@@ -94,7 +95,7 @@ class ChooseTheme extends React.Component<ChooseThemeProps, {}> {
 
 function mapStateToProps(state: BudgeState) {
   return {
-    user: state.user,
+    user: state.userState.user,
   };
 }
 

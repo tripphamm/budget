@@ -5,9 +5,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import Routes from './Routes';
-import { BudgeState } from './budge-app-env';
 import { getThemePaletteByName, defaultThemePalette } from './utils/themeUtil';
-import { observeAuthState, unobserveAuthState } from './state/asyncActionCreators';
+import { BudgeState } from './state/rootState';
+import { observeAuthState, unobserveAuthState } from './state/user/asyncActionCreators';
 
 interface AppProps {
   themeName: string | null;
@@ -48,7 +48,7 @@ class App extends React.Component<AppProps> {
 
 function mapStateToProps(state: BudgeState) {
   return {
-    themeName: state.user !== null ? state.user.theme : null,
+    themeName: state.userState.user !== null ? state.userState.user.theme : null,
   };
 }
 

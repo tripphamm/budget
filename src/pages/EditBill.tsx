@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import Shell from '../components/Shell';
-
-import { toggleSideDrawerOpen } from '../state/actionCreators';
-import { ToggleSideDrawerOpenAction } from '../state/actions';
+import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
+import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
 
 interface EditBillProps {
   toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;

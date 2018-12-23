@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import BottomNav from './BottomNav';
 import SideDrawer from './SideDrawer';
 import { appBarHeight, bottomNavHeight } from '../settings/magicNumbers';
-import { BudgeState, BudgeUser } from '../budge-app-env';
 
 interface ShellProps {
   title?: string;
@@ -58,9 +57,11 @@ class Shell extends React.Component<ShellProps, {}> {
         {renderSideDrawer && <SideDrawer />}
         <div
           style={{
+            boxSizing: 'border-box',
             // set the size of the viewport (between the app bar and bottom nav)
             height: `calc(100vh - ${appBarHeight + bottomNavHeight}px)`,
             overflow: 'auto',
+            padding: 20,
           }}
         >
           {children}
@@ -71,15 +72,11 @@ class Shell extends React.Component<ShellProps, {}> {
   }
 }
 
-function mapStateToProps(state: BudgeState) {
-  return {};
-}
-
 function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators({}, dispatch);
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(Shell);

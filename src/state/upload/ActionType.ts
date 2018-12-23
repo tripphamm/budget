@@ -1,0 +1,8 @@
+enum ActionType {
+  START_UPLOAD = 'START_UPLOAD',
+  PROGRESS_UPLOAD = 'PROGRESS_UPLOAD',
+  COMPLETE_UPLOAD = 'COMPLETE_UPLOAD',
+  FAIL_UPLOAD = 'FAIL_UPLOAD',
+}
+
+export default ActionType;

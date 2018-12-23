@@ -1,17 +1,16 @@
 import * as React from 'react';
+import { RouteComponentProps } from 'react-router';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
 
 import Shell from '../components/Shell';
 import BottomAction from '../components/BottomAction';
-
-import { SetUserDisplayNameAction, SaveUserActionCreator } from '../state/actions';
-import { setUserDisplayName } from '../state/actionCreators';
-import { saveUser } from '../state/asyncActionCreators';
-import { BudgeUser, BudgeState } from '../budge-app-env';
-import { RouteComponentProps } from 'react-router';
+import { BudgeUser } from '../budge-app-env';
+import { SetUserDisplayNameAction, SaveUserActionCreator } from '../state/user/actions';
+import { BudgeState } from '../state/rootState';
+import { setUserDisplayName } from '../state/user/actionCreators';
+import { saveUser } from '../state/user/asyncActionCreators';
 
 type ChooseNameProps = RouteComponentProps & {
   user: BudgeUser | null;
@@ -55,6 +54,7 @@ class ChooseName extends React.Component<ChooseNameProps, {}> {
           }}
         >
           <TextField
+            variant="outlined"
             label="Name"
             value={user.displayName ? user.displayName : ''}
             onChange={event => setUserDisplayName(event.target.value)}
@@ -67,7 +67,7 @@ class ChooseName extends React.Component<ChooseNameProps, {}> {
 
 function mapStateToProps(state: BudgeState) {
   return {
-    user: state.user,
+    user: state.userState.user,
   };
 }
 

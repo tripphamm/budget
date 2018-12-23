@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 
 import Shell from '../components/Shell';
-
-import { logInUserViaFacebook } from '../state/asyncActionCreators';
+import { logInUserViaFacebook } from '../state/user/asyncActionCreators';
 
 interface SignInProps {
   logInUserViaFacebook: () => (dispatch: Dispatch) => void;
@@ -20,7 +19,6 @@ class SignIn extends React.Component<SignInProps, {}> {
         <div
           style={{
             height: '100%',
-            width: '100vw',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',

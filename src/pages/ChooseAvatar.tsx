@@ -2,18 +2,18 @@ import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { withTheme, Theme } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 
 import Shell from '../components/Shell';
 import BottomAction from '../components/BottomAction';
 
-import { SetUserAvatarAction, SaveUserActionCreator } from '../state/actions';
-import { setUserAvatar } from '../state/actionCreators';
-import { saveUser } from '../state/asyncActionCreators';
 import { getImageSrcByUnicodeOrShortName } from '../utils/emojiUtil';
-import { BudgeIcon, BudgeUser, BudgeState } from '../budge-app-env';
+import { BudgeIcon, BudgeUser } from '../budge-app-env';
 import IconType from '../enums/IconType';
 import { RouteComponentProps } from 'react-router';
+import { SetUserAvatarAction, SaveUserActionCreator } from '../state/user/actions';
+import { BudgeState } from '../state/rootState';
+import { setUserAvatar } from '../state/user/actionCreators';
+import { saveUser } from '../state/user/asyncActionCreators';
 
 const avatars = [
   ':dog:',
@@ -134,7 +134,7 @@ class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
 
 function mapStateToProps(state: BudgeState) {
   return {
-    user: state.user,
+    user: state.userState.user,
   };
 }
 

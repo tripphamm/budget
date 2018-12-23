@@ -1,7 +1,12 @@
 import { default as createUuid } from 'uuid/v4';
 
-import { startUpload, progressUpload, completeUpload, failUpload } from '../state/actionCreators';
-import UploadState from '../enums/UploadState';
+import {
+  startUpload,
+  progressUpload,
+  completeUpload,
+  failUpload,
+} from '../state/upload/actionCreators';
+import UploadStatus from '../enums/UploadStatus';
 
 import { storage } from './firebaseService';
 import { getGoogleCloudStorageBucket } from '../settings/hosts';
@@ -28,10 +33,10 @@ export function upload(file: UploadableObject, options = { uploadId: createUuid(
       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
       switch (snapshot.state) {
         case 'paused':
-          dispatch(progressUpload(uploadId, UploadState.PAUSED, progress));
+          dispatch(progressUpload(uploadId, UploadStatus.PAUSED, progress));
           break;
         case 'running':
-          dispatch(progressUpload(uploadId, UploadState.RUNNING, progress));
+          dispatch(progressUpload(uploadId, UploadStatus.RUNNING, progress));
           break;
         default:
           throw new Error(`Upload state ${snapshot.state} was not recognized`);

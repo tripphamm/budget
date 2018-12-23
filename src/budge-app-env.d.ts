@@ -1,29 +1,6 @@
 import IconType from './enums/IconType';
-import UploadState from './enums/UploadState';
+import UploadStatus from './enums/UploadStatus';
 import Cadence from './enums/Cadence';
-
-interface BudgeState {
-  user: BudgeUser | null;
-  setUserError: Error | null;
-  saveUserError: Error | null;
-  authenticating: boolean;
-  sideDrawerOpen: boolean;
-  uploads: {
-    [id: string]: BudgeUpload;
-  };
-  bills: {
-    [id: string]: BudgeBill;
-  };
-  saveBillErrors: {
-    [id: string]: Error | null;
-  };
-  expenses: {
-    [id: string]: BudgeExpense;
-  };
-  saveExpenseErrors: {
-    [id: string]: Error | null;
-  };
-}
 
 interface BudgeIcon {
   type: IconType;
@@ -46,11 +23,12 @@ interface BudgeUpload {
   downloadURL?: string;
   error?: Error;
   progress: number;
-  state: UploadState;
+  status: UploadStatus;
 }
 
 interface BudgeBill {
   id: string;
+  name: string;
   amount: number;
   cadence: Cadence;
   icon: BudgeIcon;
@@ -58,6 +36,7 @@ interface BudgeBill {
 
 interface BudgeExpense {
   id: string;
+  name: string;
   amount: number;
   timestamp: number; // ms since epoch
 }
