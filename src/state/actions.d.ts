@@ -1,6 +1,7 @@
 import ActionType from './ActionType';
 import UploadState from '../enums/UploadState';
-import { BudgeAvatar, BudgeUser, UserDocument } from '../budge-app-env';
+import { BudgeAvatar, BudgeUser, UserDocument, BudgeState } from '../budge-app-env';
+import { Dispatch } from 'redux';
 
 type AnyAction =
   | SetUserSuccessAction
@@ -100,3 +101,9 @@ interface SetUserThemeAction {
   type: ActionType.SET_USER_THEME;
   theme: string;
 }
+
+// action creators
+
+type SaveUserActionCreator = (
+  onSaveComplete: () => void,
+) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;

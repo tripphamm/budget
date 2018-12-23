@@ -14,53 +14,6 @@ import Avatar from './Avatar';
 import { BudgeUser, BudgeState } from '../budge-app-env';
 import { ToggleSideDrawerOpenAction } from '../state/actions';
 
-const avatars = [
-  ':dog:',
-  ':cat:',
-  ':mouse:',
-  ':hamster:',
-  ':rabbit:',
-  ':fox:',
-  ':bear:',
-  ':panda_face:',
-  ':koala:',
-  ':tiger:',
-  ':lion_face:',
-  ':cow:',
-  ':pig:',
-  ':frog:',
-  ':monkey_face:',
-  ':gorilla:',
-  ':chicken:',
-  ':penguin:',
-  ':bird:',
-  ':duck:',
-  ':hatched_chick:',
-  ':eagle:',
-  ':owl:',
-  ':bat:',
-  ':wolf:',
-  ':boar:',
-  ':horse:',
-  ':zebra:',
-  ':butterfly:',
-  ':snail:',
-  ':spider:',
-  ':turtle:',
-  ':lizard:',
-  ':snake:',
-  ':octopus:',
-  ':blowfish:',
-  ':fish:',
-  ':dolphin:',
-  ':whale:',
-  ':shark:',
-  ':crocodile:',
-  ':elephant:',
-  ':giraffe:',
-  ':raccoon:',
-];
-
 type SideDrawerProps = RouteComponentProps & {
   user: BudgeUser | null;
   sideDrawerOpen: boolean;
@@ -82,7 +35,7 @@ class SideDrawer extends React.Component<SideDrawerProps, {}> {
     return (
       <SwipeableDrawer open={sideDrawerOpen} onClose={closeDrawer} onOpen={openDrawer}>
         <div tabIndex={0} role="button" onClick={closeDrawer} onKeyDown={closeDrawer}>
-          <ListItem>
+          <ListItem onClick={() => history.push('/profile')}>
             <Avatar avatar={user.avatar} />
             <ListItemText primary={user.displayName} />
           </ListItem>

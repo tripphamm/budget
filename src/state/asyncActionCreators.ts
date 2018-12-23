@@ -80,7 +80,7 @@ export function logOutUser() {
   };
 }
 
-export function saveUser() {
+export function saveUser(onSaveComplete?: () => void) {
   return async (dispatch: Dispatch, getState: () => BudgeState) => {
     dispatch(toggleSaving(true));
 
@@ -99,6 +99,10 @@ export function saveUser() {
       };
 
       await firestore.doc(`users/${user.id}`).set(userDocument);
+
+      if (typeof onSaveComplete === 'function') {
+        onSaveComplete();
+      }
 
       dispatch(saveUserSuccess(userDocument));
     } catch (error) {

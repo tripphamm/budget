@@ -1,28 +1,36 @@
 import * as React from 'react';
+import { Dispatch, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import Routes from './Routes';
-import UserGate from './UserGate';
 import { BudgeState } from './budge-app-env';
-
-const defaultThemeColor = '#98ff98';
+import { getThemePaletteByName, defaultThemePalette } from './utils/themeUtil';
+import { observeAuthState, unobserveAuthState } from './state/asyncActionCreators';
 
 interface AppProps {
-  themeColor: string | null;
+  themeName: string | null;
+  observeAuthState: () => (dispatch: Dispatch) => void;
+  unobserveAuthState: () => () => void;
 }
 
 class App extends React.Component<AppProps> {
+  componentDidMount() {
+    this.props.observeAuthState();
+  }
+
+  componentWillUnmount() {
+    this.props.unobserveAuthState();
+  }
+
   render() {
-    const { themeColor } = this.props;
+    const { themeName } = this.props;
+
+    const palette = getThemePaletteByName(themeName) || defaultThemePalette;
 
     const theme = createMuiTheme({
-      palette: {
-        primary: {
-          main: themeColor !== null ? themeColor : defaultThemeColor,
-        },
-      },
+      palette,
       typography: {
         useNextVariants: true,
       },
@@ -30,11 +38,9 @@ class App extends React.Component<AppProps> {
 
     return (
       <MuiThemeProvider theme={theme}>
-        <UserGate>
-          <BrowserRouter>
-            <Routes />
-          </BrowserRouter>
-        </UserGate>
+        <BrowserRouter>
+          <Routes />
+        </BrowserRouter>
       </MuiThemeProvider>
     );
   }
@@ -42,10 +48,21 @@ class App extends React.Component<AppProps> {
 
 function mapStateToProps(state: BudgeState) {
   return {
-    themeColor: state.user !== null ? state.user.theme : null,
+    themeName: state.user !== null ? state.user.theme : null,
   };
 }
+
+function mapDispatchToProps(dispatch: Dispatch) {
+  return bindActionCreators(
+    {
+      observeAuthState,
+      unobserveAuthState,
+    },
+    dispatch,
+  );
+}
+
 export default connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(App);

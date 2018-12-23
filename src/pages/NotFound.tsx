@@ -16,13 +16,13 @@ class NotFound extends React.Component<NotFoundProps, {}> {
   render() {
     return (
       <Shell
-        title="New Bill"
+        title="Not Found"
         iconElementLeft={<MenuIcon />}
         onLeftIconButtonClick={() => {
           this.props.toggleSideDrawerOpen();
         }}
       >
-        <div>Add Expense</div>
+        <div>Not found</div>
       </Shell>
     );
   }

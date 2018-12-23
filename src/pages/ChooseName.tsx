@@ -7,20 +7,21 @@ import Typography from '@material-ui/core/Typography';
 import Shell from '../components/Shell';
 import BottomAction from '../components/BottomAction';
 
-import { SetUserDisplayNameAction } from '../state/actions';
+import { SetUserDisplayNameAction, SaveUserActionCreator } from '../state/actions';
 import { setUserDisplayName } from '../state/actionCreators';
 import { saveUser } from '../state/asyncActionCreators';
 import { BudgeUser, BudgeState } from '../budge-app-env';
+import { RouteComponentProps } from 'react-router';
 
-interface ChooseNameProps {
+type ChooseNameProps = RouteComponentProps & {
   user: BudgeUser | null;
   setUserDisplayName: (name: string) => SetUserDisplayNameAction;
-  saveUser: () => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
-}
+  saveUser: SaveUserActionCreator;
+};
 
 class ChooseName extends React.Component<ChooseNameProps, {}> {
   render() {
-    const { user, setUserDisplayName, saveUser } = this.props;
+    const { user, history, match, setUserDisplayName, saveUser } = this.props;
 
     if (user === null) {
       throw new Error('`user` must be non-null to render ChooseName component');
@@ -33,9 +34,13 @@ class ChooseName extends React.Component<ChooseNameProps, {}> {
         bottomBarElement={
           <BottomAction
             label="Save"
-            labelColor="white"
-            backgroundColor="green"
-            onClick={saveUser}
+            onClick={() =>
+              saveUser(() => {
+                if (!match.url.includes('/profile')) {
+                  history.push('/profile');
+                }
+              })
+            }
           />
         }
       >

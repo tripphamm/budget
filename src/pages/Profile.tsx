@@ -8,7 +8,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { BudgeState, BudgeUser } from '../budge-app-env';
 import Shell from '../components/Shell';
@@ -17,20 +17,20 @@ import Avatar from '../components/Avatar';
 import { toggleSideDrawerOpen } from '../state/actionCreators';
 import { ToggleSideDrawerOpenAction } from '../state/actions';
 
-interface ProfileProps {
+type ProfileProps = RouteComponentProps & {
   user: BudgeUser | null;
   toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
-}
+};
 
 class Profile extends React.Component<ProfileProps, {}> {
   render() {
-    const { user, toggleSideDrawerOpen } = this.props;
+    const { user, history, toggleSideDrawerOpen } = this.props;
 
     if (user === null) {
       throw new Error('`user` must be non-null to render Profile component');
     }
 
-    const monthlyBillAmount = 103;
+    const monthlyBillAmount = null;
 
     return (
       <Shell
@@ -40,15 +40,14 @@ class Profile extends React.Component<ProfileProps, {}> {
           toggleSideDrawerOpen();
         }}
       >
-        <div>Profile</div>
         <List>
-          <ListItem component={() => <Link to="/editProfile" />}>
+          <ListItem onClick={() => history.push('/editProfile')}>
             <Avatar avatar={user.avatar} />
             <ListItemText primary={user.displayName} />
           </ListItem>
           <Divider />
-          <ListItem component={() => <Link to="/bills" />}>
-            <MUIAvatar>
+          <ListItem onClick={() => history.push('/bills')}>
+            <MUIAvatar color="secondary">
               <TodayIcon />
             </MUIAvatar>
             <ListItemText

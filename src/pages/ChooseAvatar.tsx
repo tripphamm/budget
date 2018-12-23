@@ -1,17 +1,19 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { withTheme, Theme } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 
 import Shell from '../components/Shell';
 import BottomAction from '../components/BottomAction';
 
-import { SetUserAvatarAction } from '../state/actions';
+import { SetUserAvatarAction, SaveUserActionCreator } from '../state/actions';
 import { setUserAvatar } from '../state/actionCreators';
 import { saveUser } from '../state/asyncActionCreators';
 import { getImageSrcByUnicodeOrShortName } from '../utils/emojiUtil';
 import { BudgeAvatar, BudgeUser, BudgeState } from '../budge-app-env';
 import AvatarType from '../enums/AvatarType';
+import { RouteComponentProps } from 'react-router';
 
 const avatars = [
   ':dog:',
@@ -60,15 +62,16 @@ const avatars = [
   ':raccoon:',
 ];
 
-interface ChooseAvatarProps {
+type ChooseAvatarProps = RouteComponentProps & {
+  theme: Theme;
   user: BudgeUser | null;
   setUserAvatar: (avatar: BudgeAvatar) => SetUserAvatarAction;
-  saveUser: () => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
-}
+  saveUser: SaveUserActionCreator;
+};
 
 class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
   render() {
-    const { user, setUserAvatar, saveUser } = this.props;
+    const { user, theme, history, match, setUserAvatar, saveUser } = this.props;
 
     if (user === null) {
       throw new Error('`user` must be non-null to render ChooseAvatar component');
@@ -81,9 +84,13 @@ class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
         bottomBarElement={
           <BottomAction
             label="Save"
-            labelColor="white"
-            backgroundColor="green"
-            onClick={saveUser}
+            onClick={() =>
+              saveUser(() => {
+                if (!match.url.includes('/profile')) {
+                  history.push('/profile');
+                }
+              })
+            }
           />
         }
       >
@@ -110,7 +117,7 @@ class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
                   border: 'none',
 
                   borderRadius: 4,
-                  boxShadow: selected ? '0 0 0 3px blue' : '',
+                  boxShadow: selected ? `0 0 0 3px ${theme.palette.secondary.main}` : '',
                   padding: 2,
                   margin: 2,
                 }}
@@ -141,7 +148,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ChooseAvatar);
+export default withTheme()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(ChooseAvatar),
+);

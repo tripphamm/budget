@@ -26,10 +26,6 @@ class Bills extends React.Component<BillsProps, {}> {
         onLeftIconButtonClick={() => {
           this.props.toggleSideDrawerOpen();
         }}
-        iconElementRight={<SearchIcon />}
-        onRightIconButtonClick={() => {
-          this.props.history.push('/search');
-        }}
       >
         <div>Bills</div>
         <FloatingActionButtonBuffer />

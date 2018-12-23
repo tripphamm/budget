@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Route, Switch, withRouter, RouteComponentProps } from 'react-router-dom';
 
 import AddExpense from './pages/AddExpense';
 import EditExpense from './pages/EditExpense';
@@ -13,28 +14,66 @@ import NotFound from './pages/NotFound';
 import ChooseAvatar from './pages/ChooseAvatar';
 import ChooseTheme from './pages/ChooseTheme';
 import ChooseName from './pages/ChooseName';
+import SignIn from './pages/SignIn';
+import { BudgeUser, BudgeState } from './budge-app-env';
 
-const routes: React.FunctionComponent = () => {
-  return (
-    <Switch>
-      <Route exact path="/" component={Home} />
-
-      <Route exact path="/profile" component={Profile} />
-      <Route exact path="/chooseName" component={ChooseName} />
-      <Route exact path="/chooseAvatar" component={ChooseAvatar} />
-      <Route exact path="/chooseTheme" component={ChooseTheme} />
-
-      <Route exact path="/newBill" component={AddBill} />
-      <Route exact path="/bills" component={Bills} />
-      <Route path="/bills/:billId" component={EditBill} />
-
-      <Route exact path="/newExpense" component={AddExpense} />
-      <Route exact path="/expenses" component={Expenses} />
-      <Route path="/expenses/:expenseId" component={EditExpense} />
-
-      <Route path="*" component={NotFound} />
-    </Switch>
-  );
+type RoutesProps = RouteComponentProps & {
+  user: BudgeUser | null;
 };
 
-export default routes;
+class Routes extends React.Component<RoutesProps> {
+  render() {
+    const { user } = this.props;
+
+    if (user === null) {
+      return <Route path="*" component={SignIn} />;
+    }
+
+    if (user.persistedDisplayName === null) {
+      return <Route path="*" component={ChooseName} />;
+    }
+
+    if (user.persistedAvatar === null) {
+      return <Route path="*" component={ChooseAvatar} />;
+    }
+
+    if (user.persistedTheme === null) {
+      return <Route path="*" component={ChooseTheme} />;
+    }
+
+    return (
+      <Switch>
+        <Route exact path="/" component={Home} />
+
+        <Route exact path="/profile" component={Profile} />
+        <Route exact path="/chooseName" component={ChooseName} />
+        <Route exact path="/chooseAvatar" component={ChooseAvatar} />
+        <Route exact path="/chooseTheme" component={ChooseTheme} />
+
+        <Route exact path="/newBill" component={AddBill} />
+        <Route exact path="/bills" component={Bills} />
+        <Route path="/bills/:billId" component={EditBill} />
+
+        <Route exact path="/newExpense" component={AddExpense} />
+        <Route exact path="/expenses" component={Expenses} />
+        <Route path="/expenses/:expenseId" component={EditExpense} />
+
+        <Route path="*" component={NotFound} />
+      </Switch>
+    );
+  }
+}
+
+function mapStateToProps(state: BudgeState) {
+  return {
+    user: state.user,
+  };
+}
+
+// we need to wrap this component with withRouter so that redux's connect won't block updates
+export default withRouter(
+  connect(
+    mapStateToProps,
+    null,
+  )(Routes),
+);
