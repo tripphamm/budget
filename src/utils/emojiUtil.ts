@@ -49,14 +49,6 @@ function parseSrcFromImageHTMLString(imageHTMLString: string) {
   return defaultImageSrc;
 }
 
-function convertTo64px(imageSrc: string) {
-  return imageSrc.replace('/32/', '/64/');
-}
-
-function convertTo128px(imageSrc: string) {
-  return imageSrc.replace('/32/', '/128/');
-}
-
 const emojiImageSrcCache = new Map();
 function addToCache(unicodeOrShortName: string, imageSrc: string) {
   emojiImageSrcCache.set(unicodeOrShortName, imageSrc);
@@ -70,22 +62,35 @@ function getFromCache(unicodeOrShortName: string): string | null {
   return emojiImageSrcCache.get(unicodeOrShortName);
 }
 
-export function getImageSrcByUnicodeOrShortName(unicodeOrShortName: string) {
-  const cachedResult = getFromCache(unicodeOrShortName);
+type EmojiSize = 32 | 64 | 128;
+function resize(imageSrc: string, size: EmojiSize) {
+  return imageSrc.replace('/32/', `/${size}/`);
+}
 
-  if (cachedResult !== null) {
-    return cachedResult;
+interface GetImageSrcByUnicodeOrShortNameOptions {
+  size?: EmojiSize;
+}
+
+export function getImageSrcByUnicodeOrShortName(
+  unicodeOrShortName: string,
+  options: GetImageSrcByUnicodeOrShortNameOptions = {},
+) {
+  const { size = 64 } = options;
+  const cachedImageSrc = getFromCache(unicodeOrShortName);
+
+  if (cachedImageSrc !== null) {
+    return resize(cachedImageSrc, size);
   }
 
   if (isValidUnicodeOrShortName(unicodeOrShortName)) {
     const shortName = convertUnicodeOrShortNameToShortName(unicodeOrShortName); // 10ms
 
     const imageHTMLString = emojione.shortnameToImage(shortName); // 0.1ms
-    const sizedImageHTMLString = convertTo64px(parseSrcFromImageHTMLString(imageHTMLString)); // 0.1ms
+    const imageSrc = parseSrcFromImageHTMLString(imageHTMLString);
 
-    addToCache(unicodeOrShortName, sizedImageHTMLString);
+    addToCache(unicodeOrShortName, imageSrc);
 
-    return sizedImageHTMLString;
+    return resize(imageSrc, size);
   }
 
   // if the shortName is invalid (hopefully we didn't let it get this far) return the '?' emoji

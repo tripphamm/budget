@@ -1,14 +1,16 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import MenuIcon from '@material-ui/icons/Menu';
-import { default as MUIAvatar } from '@material-ui/core/Avatar';
-import TodayIcon from '@material-ui/icons/Today';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import { RouteComponentProps } from 'react-router-dom';
+import MenuIcon from '@material-ui/icons/Menu';
+import {
+  Avatar as MUIAvatar,
+  Theme,
+  withTheme,
+  List,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
 
 import { BudgeUser } from '../budge-app-env';
 import Shell from '../components/Shell';
@@ -18,20 +20,23 @@ import { BudgeState } from '../state/rootState';
 import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
 
 type ProfileProps = RouteComponentProps & {
+  theme: Theme;
   user: BudgeUser | null;
   toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
 };
 
 class Profile extends React.Component<ProfileProps, {}> {
   render() {
-    const { user, history, toggleSideDrawerOpen } = this.props;
+    const { user, theme, history, toggleSideDrawerOpen } = this.props;
 
     if (user === null) {
       throw new Error('`user` must be non-null to render Profile component');
     }
 
-    const monthlyBillAmount = null;
+    // assume that displayName is non-null
+    const displayName: string = user.displayName as string;
 
+    // todo: what if userName is an empty string
     return (
       <Shell
         title="Profile"
@@ -40,21 +45,22 @@ class Profile extends React.Component<ProfileProps, {}> {
           toggleSideDrawerOpen();
         }}
       >
+        <button
+          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          onClick={() => history.push('/chooseAvatar')}
+        >
+          <Avatar avatar={user.avatar} size={100} />
+        </button>
         <List>
-          <ListItem onClick={() => history.push('/editProfile')}>
-            <Avatar avatar={user.avatar} />
-            <ListItemText primary={user.displayName} />
-          </ListItem>
-          <Divider />
-          <ListItem onClick={() => history.push('/bills')}>
-            <MUIAvatar color="secondary">
-              <TodayIcon />
+          <ListItem button onClick={() => history.push('/chooseName')}>
+            <MUIAvatar style={{ backgroundColor: theme.palette.secondary.main }}>
+              {displayName.slice(0, 1).toUpperCase()}
             </MUIAvatar>
-            <ListItemText
-              primary={
-                monthlyBillAmount !== null ? `$${monthlyBillAmount}/month` : 'Add recurring bills'
-              }
-            />
+            <ListItemText primary={displayName} />
+          </ListItem>
+          <ListItem button onClick={() => history.push('/chooseTheme')}>
+            <MUIAvatar style={{ backgroundColor: theme.palette.primary.main }} />
+            <ListItemText>Theme</ListItemText>
           </ListItem>
         </List>
       </Shell>
@@ -77,7 +83,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Profile);
+export default withTheme()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(Profile),
+);

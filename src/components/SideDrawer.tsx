@@ -42,7 +42,7 @@ class SideDrawer extends React.Component<SideDrawerProps, {}> {
         <div tabIndex={0} role="button" onClick={closeDrawer} onKeyDown={closeDrawer}>
           <List>
             <ListItem button onClick={() => history.push('/profile')}>
-              <Avatar avatar={user.avatar} />
+              <Avatar avatar={user.avatar} size={40} />
               <ListItemText primary={user.displayName} />
             </ListItem>
             <ListItem button onClick={logOutUser}>

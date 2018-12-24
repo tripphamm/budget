@@ -14,6 +14,7 @@ import { SetUserAvatarAction, SaveUserActionCreator } from '../state/user/action
 import { BudgeState } from '../state/rootState';
 import { setUserAvatar } from '../state/user/actionCreators';
 import { saveUser } from '../state/user/asyncActionCreators';
+import EmojiIcon from '../components/EmojiIcon';
 
 const avatars = [
   ':dog:',
@@ -122,7 +123,7 @@ class ChooseAvatar extends React.Component<ChooseAvatarProps, {}> {
                   margin: 2,
                 }}
               >
-                <img src={getImageSrcByUnicodeOrShortName(emojiShortName)} alt={emojiShortName} />
+                <EmojiIcon emojiShortName={emojiShortName} size={40} />
               </button>
             );
           })}

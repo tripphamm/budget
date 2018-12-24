@@ -3,14 +3,15 @@ import { Avatar as MUIAvatar } from '@material-ui/core';
 
 import { BudgeIcon } from '../budge-app-env';
 import IconType from '../enums/IconType';
-import EmojiIconAvatar from './EmojiIconAvatar';
+import EmojiIcon from './EmojiIcon';
 
 interface AvatarProps {
   avatar: BudgeIcon | null;
+  size: number;
 }
 
 const Avatar: React.FunctionComponent<AvatarProps> = (props: AvatarProps) => {
-  const { avatar } = props;
+  const { avatar, size = 40 } = props;
 
   if (avatar === null) {
     return <MUIAvatar />;
@@ -18,7 +19,7 @@ const Avatar: React.FunctionComponent<AvatarProps> = (props: AvatarProps) => {
 
   switch (avatar.type) {
     case IconType.EMOJI:
-      return <EmojiIconAvatar emojiShortName={avatar.value} />;
+      return <EmojiIcon emojiShortName={avatar.value} size={size} />;
     default:
       throw new Error(`Unknown avatar type ${avatar.type}`);
   }

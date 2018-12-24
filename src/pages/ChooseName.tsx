@@ -46,7 +46,7 @@ class ChooseName extends React.Component<ChooseNameProps, {}> {
         <div
           style={{
             height: '100%',
-            width: '100vw',
+            width: '100%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',

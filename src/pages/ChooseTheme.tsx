@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
+import { Theme, withTheme } from '@material-ui/core';
 
 import Shell from '../components/Shell';
 import BottomAction from '../components/BottomAction';
@@ -16,13 +16,14 @@ import { saveUser } from '../state/user/asyncActionCreators';
 
 type ChooseThemeProps = RouteComponentProps & {
   user: BudgeUser | null;
+  theme: Theme;
   setUserTheme: (name: string) => SetUserThemeAction;
   saveUser: SaveUserActionCreator;
 };
 
 class ChooseTheme extends React.Component<ChooseThemeProps, {}> {
   render() {
-    const { user, history, match, setUserTheme, saveUser } = this.props;
+    const { user, theme, history, match, setUserTheme, saveUser } = this.props;
 
     if (user === null) {
       throw new Error('`user` must be non-null to render ChooseTheme component');
@@ -48,7 +49,7 @@ class ChooseTheme extends React.Component<ChooseThemeProps, {}> {
         <div
           style={{
             height: '100%',
-            width: '100vw',
+            width: '100%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -79,7 +80,7 @@ class ChooseTheme extends React.Component<ChooseThemeProps, {}> {
                     width: 64,
 
                     borderRadius: 4,
-                    boxShadow: selected ? '0 0 0 3px blue' : '',
+                    boxShadow: selected ? `0 0 0 3px ${theme.palette.secondary.main}` : '',
                     padding: 2,
                     margin: 2,
                   }}
@@ -109,7 +110,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ChooseTheme);
+export default withTheme()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(ChooseTheme),
+);

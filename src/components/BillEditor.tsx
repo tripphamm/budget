@@ -19,6 +19,7 @@ import { saveBill } from '../state/bill/asyncActionCreators';
 import { BudgeBill, BudgeIcon } from '../budge-app-env';
 import Loading from './Loading';
 import { getImageSrcByUnicodeOrShortName } from '../utils/emojiUtil';
+import EmojiIcon from './EmojiIcon';
 
 const billIcons = [
   ':money_with_wings:',
@@ -200,14 +201,7 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
                       margin: 2,
                     }}
                   >
-                    <img
-                      style={{
-                        height: 64,
-                        width: 64,
-                      }}
-                      src={getImageSrcByUnicodeOrShortName(emojiShortName)}
-                      alt={emojiShortName}
-                    />
+                    <EmojiIcon emojiShortName={emojiShortName} size={40} />
                   </button>
                 );
               })}

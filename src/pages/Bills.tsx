@@ -79,7 +79,7 @@ class Bills extends React.Component<BillsProps, {}> {
               return (
                 <ListItem button key={bill.id} onClick={() => history.push(`/bills/${bill.id}`)}>
                   <ListItemIcon>
-                    <Avatar avatar={bill.icon} />
+                    <Avatar avatar={bill.icon} size={40} />
                   </ListItemIcon>
                   <ListItemText
                     inset
