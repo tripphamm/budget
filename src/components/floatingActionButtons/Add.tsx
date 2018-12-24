@@ -12,7 +12,7 @@ interface FloatingAddButtonProps {
   onClick: () => void;
 }
 
-const add: React.FunctionComponent<FloatingAddButtonProps> = props => {
+const Add: React.FunctionComponent<FloatingAddButtonProps> = props => {
   return (
     <Fab
       {...props}
@@ -30,4 +30,4 @@ const add: React.FunctionComponent<FloatingAddButtonProps> = props => {
   );
 };
 
-export default add;
+export default Add;

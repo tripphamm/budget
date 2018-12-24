@@ -15,7 +15,7 @@ class EditExpense extends React.Component<EditExpenseProps, {}> {
   render() {
     return (
       <Shell
-        title="New Bill"
+        title="Edit Expense"
         iconElementLeft={<MenuIcon />}
         onLeftIconButtonClick={() => {
           this.props.toggleSideDrawerOpen();

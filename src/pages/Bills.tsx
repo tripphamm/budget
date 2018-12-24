@@ -3,14 +3,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import MenuIcon from '@material-ui/icons/Menu';
-import {
-  Typography,
-  List,
-  ListSubheader,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from '@material-ui/core';
+import { Typography, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
 import Shell from '../components/Shell';
 import FloatingAddButton from '../components/floatingActionButtons/Add';
@@ -25,6 +18,7 @@ import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
 import { FetchBillsActionCreator } from '../state/bill/actions';
 import Avatar from '../components/Avatar';
 import Cadence from '../enums/Cadence';
+import Loading from '../components/Loading';
 
 const cadenceToPer = {
   [Cadence.DAILY]: 'per day',
@@ -39,16 +33,19 @@ type BillsProps = RouteComponentProps & {
   saveBillErrors: { [id: string]: Error | null };
   fetchBillsError: Error | null;
   fetchBills: FetchBillsActionCreator;
+  fetchedBills: boolean;
   toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
 };
 
 class Bills extends React.Component<BillsProps, {}> {
   componentDidMount() {
-    this.props.fetchBills();
+    if (!this.props.fetchedBills) {
+      this.props.fetchBills();
+    }
   }
 
   render() {
-    const { bills, saveBillErrors } = this.props;
+    const { history, bills, fetchedBills, fetchBillsError } = this.props;
 
     const billIds = Object.keys(bills);
 
@@ -60,7 +57,8 @@ class Bills extends React.Component<BillsProps, {}> {
           this.props.toggleSideDrawerOpen();
         }}
       >
-        {billIds.length === 0 && (
+        {!fetchedBills && <Loading message="Loading bills..." />}
+        {fetchedBills && billIds.length === 0 && (
           <div
             style={{
               height: `calc(100% - ${floatingActionButtonBufferHeight}px`,
@@ -73,13 +71,13 @@ class Bills extends React.Component<BillsProps, {}> {
             <Typography>Nothing here yet</Typography>
           </div>
         )}
-        {billIds.length > 0 && (
+        {fetchedBills && billIds.length > 0 && (
           <List>
             {billIds.map(id => {
               const bill = bills[id];
 
               return (
-                <ListItem button key={bill.id}>
+                <ListItem button key={bill.id} onClick={() => history.push(`/bills/${bill.id}`)}>
                   <ListItemIcon>
                     <Avatar avatar={bill.icon} />
                   </ListItemIcon>
@@ -109,6 +107,7 @@ function mapStateToProps(state: BudgeState) {
     bills: state.billState.bills,
     saveBillErrors: state.billState.saveBillErrors,
     fetchBillsError: state.billState.fetchBillsError,
+    fetchedBills: state.billState.fetchedBills,
   };
 }
 

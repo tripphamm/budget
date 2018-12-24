@@ -36,6 +36,7 @@ export default (state: BillState = initialState, action: AnyBillAction): BillSta
           ...state.bills,
           ...action.bills,
         },
+        fetchedBills: true,
       };
     case ActionType.FETCH_BILLS_FAILURE:
       return {

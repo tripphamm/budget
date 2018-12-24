@@ -1,8 +1,7 @@
 import * as React from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import { Avatar as MUIAvatar } from '@material-ui/core';
 
 import { BudgeIcon } from '../budge-app-env';
-import { getImageSrcByUnicodeOrShortName } from '../utils/emojiUtil';
 import IconType from '../enums/IconType';
 import EmojiIconAvatar from './EmojiIconAvatar';
 
@@ -10,11 +9,11 @@ interface AvatarProps {
   avatar: BudgeIcon | null;
 }
 
-const avatar: React.FunctionComponent<AvatarProps> = (props: AvatarProps) => {
+const Avatar: React.FunctionComponent<AvatarProps> = (props: AvatarProps) => {
   const { avatar } = props;
 
   if (avatar === null) {
-    return <Avatar />;
+    return <MUIAvatar />;
   }
 
   switch (avatar.type) {
@@ -25,4 +24,4 @@ const avatar: React.FunctionComponent<AvatarProps> = (props: AvatarProps) => {
   }
 };
 
-export default avatar;
+export default Avatar;

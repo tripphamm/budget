@@ -7,7 +7,7 @@ interface EmojiIconAvatarProps {
   emojiShortName: string;
 }
 
-const emojiIconAvatar: React.FunctionComponent<EmojiIconAvatarProps> = (
+const EmojiIconAvatar: React.FunctionComponent<EmojiIconAvatarProps> = (
   props: EmojiIconAvatarProps,
 ) => {
   const { emojiShortName } = props;
@@ -15,4 +15,4 @@ const emojiIconAvatar: React.FunctionComponent<EmojiIconAvatarProps> = (
   return <Avatar src={getImageSrcByUnicodeOrShortName(emojiShortName)} alt={emojiShortName} />;
 };
 
-export default emojiIconAvatar;
+export default EmojiIconAvatar;

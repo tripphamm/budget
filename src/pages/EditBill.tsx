@@ -1,42 +1,71 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import MenuIcon from '@material-ui/icons/Menu';
+import { RouteComponentProps } from 'react-router-dom';
 
-import Shell from '../components/Shell';
-import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
-import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
+import { FetchBillsActionCreator } from '../state/bill/actions';
+import { fetchBills } from '../state/bill/asyncActionCreators';
+import { BudgeBill } from '../budge-app-env';
+import { BudgeState } from '../state/rootState';
+import NotFound from './NotFound';
+import BillEditor from '../components/BillEditor';
 
-interface EditBillProps {
-  toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
+interface EditBillRouteParams {
+  billId: string;
 }
 
+type EditBillProps = RouteComponentProps<EditBillRouteParams> & {
+  fetchBills: FetchBillsActionCreator;
+  fetchedBills: boolean;
+  bills: { [id: string]: BudgeBill };
+};
+
 class EditBill extends React.Component<EditBillProps, {}> {
-  render() {
-    return (
-      <Shell
-        title="New Bill"
-        iconElementLeft={<MenuIcon />}
-        onLeftIconButtonClick={() => {
-          this.props.toggleSideDrawerOpen();
-        }}
-      >
-        <div>Add Expense</div>
-      </Shell>
-    );
+  componentDidMount() {
+    const { fetchedBills, fetchBills } = this.props;
+
+    if (!fetchedBills) {
+      fetchBills();
+    }
   }
+
+  render() {
+    const { bills, match, fetchedBills } = this.props;
+    const { params } = match;
+    const { billId } = params;
+
+    const bill = bills[billId];
+
+    if (!fetchedBills) {
+      <BillEditor loading={true} />;
+    }
+
+    if (!bill) {
+      <NotFound />;
+    }
+
+    return <BillEditor bill={bill} />;
+  }
+}
+
+function mapStateToProps(state: BudgeState) {
+  return {
+    bills: state.billState.bills,
+    fetchBillsError: state.billState.fetchBillsError,
+    fetchedBills: state.billState.fetchedBills,
+  };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators(
     {
-      toggleSideDrawerOpen,
+      fetchBills,
     },
     dispatch,
   );
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(EditBill);

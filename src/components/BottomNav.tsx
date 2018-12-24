@@ -2,7 +2,6 @@ import * as React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-// import AssessmentIcon from '@material-ui/icons/Assessment'; // "trends"
 import TodayIcon from '@material-ui/icons/Today';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
