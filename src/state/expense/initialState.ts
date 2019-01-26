@@ -3,8 +3,9 @@ import { ExpenseState } from './state';
 const initialState: ExpenseState = {
   expenses: {},
   saveExpenseErrors: {},
-  fetchExpensesError: null,
-  fetchedExpenses: false,
+  fetchExpenseErrors: {},
+  fetchExpensesByMonthErrorMatrix: null,
+  fetchedExpensesByMonthMatrix: null,
 };
 
 export default initialState;

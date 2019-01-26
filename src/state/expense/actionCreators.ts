@@ -4,9 +4,12 @@ import {
   SaveExpenseSuccessAction,
   SaveExpenseFailureAction,
   ClearSaveExpenseErrorAction,
-  FetchExpensesSuccessAction,
-  FetchExpensesFailureAction,
-  ClearFetchExpensesErrorAction,
+  FetchExpensesByMonthSuccessAction,
+  FetchExpensesByMonthFailureAction,
+  ClearFetchExpensesByMonthErrorAction,
+  FetchExpenseSuccessAction,
+  FetchExpenseFailureAction,
+  ClearFetchExpenseErrorAction,
 } from './actions';
 
 export function saveExpenseSuccess(expense: BudgeExpense): SaveExpenseSuccessAction {
@@ -16,39 +19,79 @@ export function saveExpenseSuccess(expense: BudgeExpense): SaveExpenseSuccessAct
   };
 }
 
-export function saveExpenseFailure(id: string, error: Error): SaveExpenseFailureAction {
+export function saveExpenseFailure(expenseId: string, error: Error): SaveExpenseFailureAction {
   return {
     type: ActionType.SAVE_EXPENSE_FAILURE,
-    id,
+    expenseId,
     error,
   };
 }
 
-export function clearSaveExpenseError(id: string): ClearSaveExpenseErrorAction {
+export function clearSaveExpenseError(expenseId: string): ClearSaveExpenseErrorAction {
   return {
     type: ActionType.CLEAR_SAVE_EXPENSE_ERROR,
-    id,
+    expenseId,
   };
 }
 
-export function fetchExpensesSuccess(expenses: {
-  [id: string]: BudgeExpense;
-}): FetchExpensesSuccessAction {
+export function fetchExpenseSuccess(expense: BudgeExpense): FetchExpenseSuccessAction {
   return {
-    type: ActionType.FETCH_EXPENSES_SUCCESS,
+    type: ActionType.FETCH_EXPENSE_SUCCESS,
+    expense,
+  };
+}
+
+export function fetchExpenseFailure(expenseId: string, error: Error): FetchExpenseFailureAction {
+  return {
+    type: ActionType.FETCH_EXPENSE_FAILURE,
+    expenseId,
+    error,
+  };
+}
+
+export function clearFetchExpenseError(expenseId: string): ClearFetchExpenseErrorAction {
+  return {
+    type: ActionType.CLEAR_FETCH_EXPENSE_ERROR,
+    expenseId,
+  };
+}
+
+export function fetchExpensesByMonthSuccess(
+  year: number,
+  month: number,
+  expenses: {
+    [id: string]: BudgeExpense;
+  },
+): FetchExpensesByMonthSuccessAction {
+  return {
+    type: ActionType.FETCH_EXPENSES_BY_MONTH_SUCCESS,
+    year,
+    month,
     expenses,
   };
 }
 
-export function fetchExpensesFailure(error: Error): FetchExpensesFailureAction {
+export function fetchExpensesByMonthFailure(
+  year: number,
+  month: number,
+  error: Error,
+): FetchExpensesByMonthFailureAction {
   return {
-    type: ActionType.FETCH_EXPENSES_FAILURE,
+    type: ActionType.FETCH_EXPENSES_BY_MONTH_FAILURE,
+    year,
+    month,
     error,
   };
 }
 
-export function clearFetchExpensesError(id: string): ClearFetchExpensesErrorAction {
+export function clearFetchExpensesByMonthError(
+  year: number,
+  month: number,
+  id: string,
+): ClearFetchExpensesByMonthErrorAction {
   return {
-    type: ActionType.CLEAR_FETCH_EXPENSES_ERROR,
+    type: ActionType.CLEAR_FETCH_EXPENSES_BY_MONTH_ERROR,
+    year,
+    month,
   };
 }

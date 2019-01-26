@@ -18,7 +18,7 @@ export default (state: ExpenseState = initialState, action: AnyExpenseAction): E
         ...state,
         saveExpenseErrors: {
           ...state.saveExpenseErrors,
-          [action.id]: action.error,
+          [action.expenseId]: action.error,
         },
       };
     case ActionType.CLEAR_SAVE_EXPENSE_ERROR:
@@ -26,27 +26,62 @@ export default (state: ExpenseState = initialState, action: AnyExpenseAction): E
         ...state,
         saveExpenseErrors: {
           ...state.saveExpenseErrors,
-          [action.id]: null,
+          [action.expenseId]: null,
         },
       };
-    case ActionType.FETCH_EXPENSES_SUCCESS:
+    case ActionType.FETCH_EXPENSES_BY_MONTH_SUCCESS:
       return {
         ...state,
         expenses: {
           ...state.expenses,
           ...action.expenses,
         },
-        fetchedExpenses: true,
+        fetchedExpensesByMonthMatrix: {
+          [action.year]: {
+            [action.month]: true,
+          },
+        },
       };
-    case ActionType.FETCH_EXPENSES_FAILURE:
+    case ActionType.FETCH_EXPENSES_BY_MONTH_FAILURE:
       return {
         ...state,
-        fetchExpensesError: action.error,
+        fetchExpensesByMonthErrorMatrix: {
+          [action.year]: {
+            [action.month]: action.error,
+          },
+        },
       };
-    case ActionType.CLEAR_FETCH_EXPENSES_ERROR:
+    case ActionType.CLEAR_FETCH_EXPENSES_BY_MONTH_ERROR:
       return {
         ...state,
-        fetchExpensesError: null,
+        fetchExpensesByMonthErrorMatrix: {
+          [action.year]: {
+            [action.month]: null,
+          },
+        },
+      };
+    case ActionType.FETCH_EXPENSE_SUCCESS:
+      return {
+        ...state,
+        expenses: {
+          ...state.expenses,
+          [action.expense.id as string]: action.expense,
+        },
+      };
+    case ActionType.FETCH_EXPENSE_FAILURE:
+      return {
+        ...state,
+        fetchExpenseErrors: {
+          [action.expenseId]: action.error,
+        },
+      };
+    case ActionType.CLEAR_FETCH_EXPENSE_ERROR:
+      return {
+        ...state,
+        fetchExpenseErrors: {
+          ...state.fetchExpenseErrors,
+          [action.expenseId]: null,
+        },
       };
     default:
       return state;

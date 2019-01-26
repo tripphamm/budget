@@ -8,9 +8,12 @@ type AnyExpenseAction =
   | SaveExpenseSuccessAction
   | SaveExpenseFailureAction
   | ClearSaveExpenseErrorAction
-  | FetchExpensesSuccessAction
-  | FetchExpensesFailureAction
-  | ClearFetchExpensesErrorAction;
+  | FetchExpenseSuccessAction
+  | FetchExpenseFailureAction
+  | ClearFetchExpenseErrorAction
+  | FetchExpensesByMonthSuccessAction
+  | FetchExpensesByMonthFailureAction
+  | ClearFetchExpensesByMonthErrorAction;
 
 interface SaveExpenseSuccessAction {
   type: ActionType.SAVE_EXPENSE_SUCCESS;
@@ -19,27 +22,49 @@ interface SaveExpenseSuccessAction {
 
 interface SaveExpenseFailureAction {
   type: ActionType.SAVE_EXPENSE_FAILURE;
-  id: string;
+  expenseId: string;
   error: Error;
 }
 
 interface ClearSaveExpenseErrorAction {
   type: ActionType.CLEAR_SAVE_EXPENSE_ERROR;
-  id: string;
+  expenseId: string;
 }
 
-interface FetchExpensesSuccessAction {
-  type: ActionType.FETCH_EXPENSES_SUCCESS;
-  expenses: { [id: string]: BudgeExpense };
+interface FetchExpenseSuccessAction {
+  type: ActionType.FETCH_EXPENSE_SUCCESS;
+  expense: BudgeExpense;
 }
 
-interface FetchExpensesFailureAction {
-  type: ActionType.FETCH_EXPENSES_FAILURE;
+interface FetchExpenseFailureAction {
+  type: ActionType.FETCH_EXPENSE_FAILURE;
+  expenseId: string;
   error: Error;
 }
 
-interface ClearFetchExpensesErrorAction {
-  type: ActionType.CLEAR_FETCH_EXPENSES_ERROR;
+interface ClearFetchExpenseErrorAction {
+  type: ActionType.CLEAR_FETCH_EXPENSE_ERROR;
+  expenseId: string;
+}
+
+interface FetchExpensesByMonthSuccessAction {
+  type: ActionType.FETCH_EXPENSES_BY_MONTH_SUCCESS;
+  year: number;
+  month: number;
+  expenses: { [id: string]: BudgeExpense };
+}
+
+interface FetchExpensesByMonthFailureAction {
+  type: ActionType.FETCH_EXPENSES_BY_MONTH_FAILURE;
+  year: number;
+  month: number;
+  error: Error;
+}
+
+interface ClearFetchExpensesByMonthErrorAction {
+  type: ActionType.CLEAR_FETCH_EXPENSES_BY_MONTH_ERROR;
+  year: number;
+  month: number;
 }
 
 // action creators
@@ -49,7 +74,11 @@ type SaveExpenseActionCreator = (
   onSaveComplete?: () => void,
 ) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
 
-type FetchExpensesActionCreator = () => (
-  dispatch: Dispatch,
-  getState: () => BudgeState,
-) => Promise<void>;
+type FetchExpensesByMonthActionCreator = (
+  year: number,
+  month: number,
+) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
+
+type FetchExpenseActionCreator = (
+  expenseId: string,
+) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;

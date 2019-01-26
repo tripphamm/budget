@@ -1,12 +1,23 @@
 import { BudgeExpense } from '../../budge-app-env';
 
+type ExpensesMatrix = null | {
+  [year: number]: {
+    [month: number]: {
+      [id: string]: BudgeExpense;
+    };
+  };
+};
+
+type FetchExpensesByMonthErrorMatrix = null | { [year: number]: { [month: number]: null | Error } };
+
+type FetchedExpensesByMonthMatrix = null | { [year: number]: { [month: number]: boolean } };
+
 interface ExpenseState {
-  expenses: {
-    [id: string]: BudgeExpense;
-  };
+  expenses: { [expenseId: string]: BudgeExpense };
   saveExpenseErrors: {
-    [id: string]: Error | null;
+    [expenseId: string]: Error | null;
   };
-  fetchExpensesError: Error | null;
-  fetchedExpenses: boolean;
+  fetchExpenseErrors: { [expenseId: string]: null | Error };
+  fetchExpensesByMonthErrorMatrix: FetchExpensesByMonthErrorMatrix;
+  fetchedExpensesByMonthMatrix: FetchedExpensesByMonthMatrix;
 }

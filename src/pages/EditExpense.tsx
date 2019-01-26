@@ -3,8 +3,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { FetchExpensesActionCreator } from '../state/expense/actions';
-import { fetchExpenses } from '../state/expense/asyncActionCreators';
+import { FetchExpenseActionCreator } from '../state/expense/actions';
+import { fetchExpense } from '../state/expense/asyncActionCreators';
 import { BudgeExpense } from '../budge-app-env';
 import { BudgeState } from '../state/rootState';
 import NotFound from './NotFound';
@@ -15,33 +15,37 @@ interface EditExpenseRouteParams {
 }
 
 type EditExpenseProps = RouteComponentProps<EditExpenseRouteParams> & {
-  fetchExpenses: FetchExpensesActionCreator;
-  fetchedExpenses: boolean;
-  expenses: { [id: string]: BudgeExpense };
+  fetchExpense: FetchExpenseActionCreator;
+  fetchExpenseErrors: { [expenseId: string]: null | Error };
+  expenses: { [expenseId: string]: BudgeExpense };
 };
 
 class EditExpense extends React.Component<EditExpenseProps, {}> {
   componentDidMount() {
-    const { fetchedExpenses, fetchExpenses } = this.props;
+    const { expenses, fetchExpense, match } = this.props;
+    const { params } = match;
+    const { expenseId } = params;
 
-    if (!fetchedExpenses) {
-      fetchExpenses();
+    if (!expenses[expenseId]) {
+      fetchExpense(expenseId);
     }
   }
 
   render() {
-    const { expenses, match, fetchedExpenses } = this.props;
+    const { expenses, fetchExpenseErrors, match } = this.props;
     const { params } = match;
     const { expenseId } = params;
 
+    const error = fetchExpenseErrors[expenseId];
     const expense = expenses[expenseId];
 
-    if (!fetchedExpenses) {
-      <ExpenseEditor loading={true} />;
+    // todo: handle different types of errors in different ways
+    if (error) {
+      <NotFound />;
     }
 
     if (!expense) {
-      <NotFound />;
+      <ExpenseEditor loading={true} />;
     }
 
     return <ExpenseEditor expense={expense} />;
@@ -51,15 +55,14 @@ class EditExpense extends React.Component<EditExpenseProps, {}> {
 function mapStateToProps(state: BudgeState) {
   return {
     expenses: state.expenseState.expenses,
-    fetchExpensesError: state.expenseState.fetchExpensesError,
-    fetchedExpenses: state.expenseState.fetchedExpenses,
+    fetchExpenseErrors: state.expenseState.fetchExpenseErrors,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators(
     {
-      fetchExpenses,
+      fetchExpense,
     },
     dispatch,
   );
