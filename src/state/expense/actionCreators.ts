@@ -31,9 +31,12 @@ export function clearSaveExpenseError(id: string): ClearSaveExpenseErrorAction {
   };
 }
 
-export function fetchExpensesSuccess(): FetchExpensesSuccessAction {
+export function fetchExpensesSuccess(expenses: {
+  [id: string]: BudgeExpense;
+}): FetchExpensesSuccessAction {
   return {
     type: ActionType.FETCH_EXPENSES_SUCCESS,
+    expenses,
   };
 }
 

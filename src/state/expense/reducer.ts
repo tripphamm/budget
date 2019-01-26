@@ -29,6 +29,25 @@ export default (state: ExpenseState = initialState, action: AnyExpenseAction): E
           [action.id]: null,
         },
       };
+    case ActionType.FETCH_EXPENSES_SUCCESS:
+      return {
+        ...state,
+        expenses: {
+          ...state.expenses,
+          ...action.expenses,
+        },
+        fetchedExpenses: true,
+      };
+    case ActionType.FETCH_EXPENSES_FAILURE:
+      return {
+        ...state,
+        fetchExpensesError: action.error,
+      };
+    case ActionType.CLEAR_FETCH_EXPENSES_ERROR:
+      return {
+        ...state,
+        fetchExpensesError: null,
+      };
     default:
       return state;
   }

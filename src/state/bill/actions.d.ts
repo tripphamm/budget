@@ -46,7 +46,7 @@ interface ClearFetchBillsErrorAction {
 // action creators
 
 type SaveBillActionCreator = (
-  bill: BudgeBill,
+  expense: BudgeBill,
   onSaveComplete?: () => void,
 ) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
 

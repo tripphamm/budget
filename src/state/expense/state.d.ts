@@ -7,4 +7,6 @@ interface ExpenseState {
   saveExpenseErrors: {
     [id: string]: Error | null;
   };
+  fetchExpensesError: Error | null;
+  fetchedExpenses: boolean;
 }

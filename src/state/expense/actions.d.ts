@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 
 import ActionType from './ActionType';
-import { BudgeExpense, BudgeBill } from '../../budge-app-env';
+import { BudgeExpense } from '../../budge-app-env';
 import { BudgeState } from '../rootState';
 
 type AnyExpenseAction =
@@ -30,6 +30,7 @@ interface ClearSaveExpenseErrorAction {
 
 interface FetchExpensesSuccessAction {
   type: ActionType.FETCH_EXPENSES_SUCCESS;
+  expenses: { [id: string]: BudgeExpense };
 }
 
 interface FetchExpensesFailureAction {
@@ -44,5 +45,11 @@ interface ClearFetchExpensesErrorAction {
 // action creators
 
 type SaveExpenseActionCreator = (
-  bill: BudgeBill,
+  expense: BudgeExpense,
+  onSaveComplete?: () => void,
 ) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
+
+type FetchExpensesActionCreator = () => (
+  dispatch: Dispatch,
+  getState: () => BudgeState,
+) => Promise<void>;

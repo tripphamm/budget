@@ -39,6 +39,7 @@ interface BudgeExpense {
   name: string;
   amount: number;
   timestamp: number; // ms since epoch
+  icon: BudgeIcon;
 }
 
 interface UserDocument {

@@ -6,34 +6,29 @@ import { default as createUuid } from 'uuid/v4';
 import NumberFormat from 'react-number-format';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import TextField from '@material-ui/core/TextField';
-import { Select, OutlinedInput, MenuItem, Theme, withTheme } from '@material-ui/core';
+import { Theme, withTheme } from '@material-ui/core';
 
 import Shell from '../components/Shell';
-
-import Cadence from '../enums/Cadence';
 import BottomAction from '../components/BottomAction';
+
 import IconType from '../enums/IconType';
-import { SaveBillActionCreator } from '../state/bill/actions';
+import { SaveExpenseActionCreator } from '../state/expense/actions';
 import { BudgeState } from '../state/rootState';
-import { saveBill } from '../state/bill/asyncActionCreators';
-import { BudgeBill, BudgeIcon } from '../budge-app-env';
+import { saveExpense } from '../state/expense/asyncActionCreators';
+import { BudgeExpense, BudgeIcon } from '../budge-app-env';
 import Loading from './Loading';
 import EmojiIcon from './EmojiIcon';
 
-const billIcons = [
+const expenseIcons = [
   ':money_with_wings:',
-  ':iphone:',
-  ':tv:',
-  ':house:',
-  ':potable_water:',
-  ':bulb:',
-  ':shopping_cart:',
-  ':credit_card:',
-  ':red_car:',
-  ':fuelpump:',
-  ':fire:',
-  ':mortar_board:',
-  ':woman_lifting_weights:',
+  ':tickets:',
+  ':calling:',
+  ':taxi:',
+  ':shushing_face:',
+  ':nail_care:',
+  ':fork_knife_plate:',
+  ':beers:',
+  ':coffee:',
 ];
 
 function numberFormatCustom(props: any) {
@@ -56,34 +51,33 @@ function numberFormatCustom(props: any) {
   );
 }
 
-type BillEditorProps = RouteComponentProps & {
+type ExpenseEditorProps = RouteComponentProps & {
   theme: Theme;
   loading?: boolean;
-  bill?: BudgeBill;
-  saveBill: SaveBillActionCreator;
+  expense?: BudgeExpense;
+  saveExpense: SaveExpenseActionCreator;
 };
 
-interface BillEditorState {
+interface ExpenseEditorState {
   name: string;
   amount: number;
-  cadence: Cadence;
   icon: BudgeIcon;
 }
 
-class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
-  constructor(props: BillEditorProps) {
+class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorState> {
+  constructor(props: ExpenseEditorProps) {
     super(props);
 
     this.state = {
-      name: props.bill ? props.bill.name : '',
-      amount: props.bill ? props.bill.amount : 0,
-      cadence: props.bill ? props.bill.cadence : Cadence.MONTHLY,
-      icon: props.bill ? props.bill.icon : { type: IconType.EMOJI, value: ':money_with_wings:' },
+      name: props.expense ? props.expense.name : '',
+      amount: props.expense ? props.expense.amount : 0,
+      icon: props.expense
+        ? props.expense.icon
+        : { type: IconType.EMOJI, value: ':money_with_wings:' },
     };
 
     this.setName = this.setName.bind(this);
     this.setAmount = this.setAmount.bind(this);
-    this.setCadence = this.setCadence.bind(this);
     this.setIcon = this.setIcon.bind(this);
   }
 
@@ -95,21 +89,17 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
     this.setState({ amount });
   }
 
-  setCadence(cadence: Cadence) {
-    this.setState({ cadence });
-  }
-
   setIcon(icon: BudgeIcon) {
     this.setState({ icon });
   }
 
   render() {
-    const { name, amount, cadence, icon } = this.state;
-    const { theme, history, bill, saveBill, loading = false } = this.props;
+    const { name, amount, icon } = this.state;
+    const { theme, history, expense, saveExpense, loading = false } = this.props;
 
     return (
       <Shell
-        title={bill ? 'Edit Bill' : 'Add Bill'}
+        title={expense ? 'Edit Expense' : 'Add Expense'}
         iconElementLeft={<ArrowBackIcon />}
         onLeftIconButtonClick={history.goBack}
         bottomBarElement={
@@ -117,23 +107,23 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
             label="Save"
             disabled={loading && name.length === 0 && amount === 0}
             onClick={() =>
-              saveBill(
+              saveExpense(
                 {
-                  id: bill ? bill.id : createUuid(),
+                  id: expense ? expense.id : createUuid(),
                   name,
                   amount,
-                  cadence,
                   icon,
+                  timestamp: new Date().getTime(),
                 },
                 () => {
-                  history.push('/bills');
+                  history.push('/expenses');
                 },
               )
             }
           />
         }
       >
-        {loading && <Loading message="Loading bill..." />}
+        {loading && <Loading message="Loading expense..." />}
         {!loading && (
           <div
             style={{
@@ -148,7 +138,7 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
               variant="outlined"
               fullWidth
               InputLabelProps={{ shrink: true }}
-              label="Bill name"
+              label="Expense name"
               value={name}
               onChange={event => this.setName(event.target.value)}
             />
@@ -162,17 +152,6 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
                 inputComponent: numberFormatCustom,
               }}
             />
-            <Select
-              value={cadence}
-              fullWidth
-              onChange={event => this.setCadence(event.target.value as Cadence)}
-              input={<OutlinedInput labelWidth={0} name="Cadence" />}
-            >
-              <MenuItem value={Cadence.MONTHLY}>Monthly</MenuItem>
-              <MenuItem value={Cadence.DAILY}>Daily</MenuItem>
-              <MenuItem value={Cadence.WEEKLY}>Weekly</MenuItem>
-              <MenuItem value={Cadence.ANUALLY}>Yearly</MenuItem>
-            </Select>
             <div
               style={{
                 padding: 5,
@@ -184,14 +163,14 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
                 overflowX: 'scroll',
               }}
             >
-              {billIcons.map(emojiShortName => {
+              {expenseIcons.map(emojiShortName => {
                 const selected = icon.type === IconType.EMOJI && icon.value === emojiShortName;
 
                 return (
                   <button
                     type="button"
                     onClick={() => this.setIcon({ type: IconType.EMOJI, value: emojiShortName })}
-                    key={`bill-icon-option-${emojiShortName}`}
+                    key={`expense-icon-option-${emojiShortName}`}
                     style={{
                       background: 'unset',
                       border: 'none',
@@ -220,7 +199,7 @@ function mapStateToProps(state: BudgeState) {
 function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators(
     {
-      saveBill,
+      saveExpense,
     },
     dispatch,
   );
@@ -231,6 +210,6 @@ export default withTheme()(
     connect(
       null,
       mapDispatchToProps,
-    )(BillEditor),
+    )(ExpenseEditor),
   ),
 );
