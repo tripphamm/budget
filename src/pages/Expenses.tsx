@@ -32,7 +32,7 @@ import {
   ExpensesMatrix,
 } from '../state/expense/state';
 import { selectExpensesByMonthMatrix } from '../state/expense/selectors';
-import { parseDateParams } from '../utils/routingUtil';
+import { parseDateParams, getExpensesURL } from '../utils/routingUtil';
 
 interface ExpensesRouteParams {
   month: string;
@@ -48,7 +48,7 @@ type ExpensesProps = RouteComponentProps<ExpensesRouteParams> & {
   toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
 };
 
-const startingYear = 2019;
+const startingYear = 2018;
 
 class Expenses extends React.Component<ExpensesProps, {}> {
   constructor(props: ExpensesProps) {
@@ -148,13 +148,37 @@ class Expenses extends React.Component<ExpensesProps, {}> {
       return <CurrentMonthExpenses />;
     }
 
+    const today = new Date();
     // get appropriate years for the Year dropdown
     // starting with the year the app was released and every year after
     // todo: could start with the year of the earlier expense
-    const currentYear = new Date().getFullYear();
+    const currentYear = today.getFullYear();
     const years: number[] = Array<number>(currentYear - startingYear + 1)
       .fill(0)
       .map((_, index) => startingYear + index);
+
+    // get appropriate list of months for the Month dropdown
+    // if the year is the current year, filter out any months after the current month
+    const currentMonth = today.getMonth();
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ].filter((_, index) => year !== currentYear || index <= currentMonth);
+
+    // if the selected date is in the future, redirect to the current month
+    if (year > currentYear || (year === currentYear && month > currentMonth)) {
+      return <CurrentMonthExpenses />;
+    }
 
     const fetchedExpenses = this.fetchedExpenses();
 
@@ -177,21 +201,22 @@ class Expenses extends React.Component<ExpensesProps, {}> {
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <Select value={month}>
-            <MenuItem value={0}>January</MenuItem>
-            <MenuItem value={1}>February</MenuItem>
-            <MenuItem value={2}>March</MenuItem>
-            <MenuItem value={3}>April</MenuItem>
-            <MenuItem value={4}>May</MenuItem>
-            <MenuItem value={5}>June</MenuItem>
-            <MenuItem value={6}>July</MenuItem>
-            <MenuItem value={7}>August</MenuItem>
-            <MenuItem value={8}>September</MenuItem>
-            <MenuItem value={9}>October</MenuItem>
-            <MenuItem value={10}>November</MenuItem>
-            <MenuItem value={11}>December</MenuItem>
+          <Select
+            value={month}
+            onChange={event => history.push(getExpensesURL(year, parseInt(event.target.value, 10)))}
+          >
+            {months.map((month, index) => (
+              <MenuItem key={`month-select-month-${month}`} value={index}>
+                {month}
+              </MenuItem>
+            ))}
           </Select>
-          <Select value={year}>
+          <Select
+            value={year}
+            onChange={event =>
+              history.push(getExpensesURL(parseInt(event.target.value, 10), month))
+            }
+          >
             {years.map(year => (
               <MenuItem key={`year-select-year-${year}`} value={year}>
                 {year}

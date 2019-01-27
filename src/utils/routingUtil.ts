@@ -6,3 +6,8 @@ export function parseDateParams(yearParam: string, monthParam: string) {
     year: parseInt(monthParam, 10),
   };
 }
+
+export function getExpensesURL(year: number, month: number) {
+  // add 1 to month to convert to 1-indexed
+  return `/expenses/${year}/${month + 1}`;
+}
