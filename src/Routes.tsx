@@ -49,7 +49,7 @@ class Routes extends React.Component<RoutesProps> {
     return (
       <div style={{ position: 'relative' }}>
         <TransitionGroup>
-          <CSSTransition key={location.key} timeout={{ enter: 500, exit: 500 }} classNames="fade">
+          <CSSTransition key={location.key} timeout={{ enter: 300, exit: 300 }} classNames="fade">
             <div style={{ position: 'absolute', top: 0, width: '100%' }}>
               <Switch location={location}>
                 <Route exact path="/" component={Home} />
