@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter, RouteComponentProps } from 'react-router-dom';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import AddExpense from './pages/AddExpense';
 import EditExpense from './pages/EditExpense';
@@ -19,8 +18,6 @@ import ChooseBudget from './pages/ChooseBudget';
 import SignIn from './pages/SignIn';
 import { BudgeState } from './state/rootState';
 import { BudgeUser } from './budge-app-env';
-
-import './transition-group.css';
 
 type RoutesProps = RouteComponentProps & {
   user: BudgeUser | null;
@@ -51,33 +48,25 @@ class Routes extends React.Component<RoutesProps> {
     }
 
     return (
-      <div style={{ position: 'relative' }}>
-        <TransitionGroup>
-          <CSSTransition key={location.key} timeout={{ enter: 300, exit: 300 }} classNames="fade">
-            <div style={{ position: 'absolute', top: 0, width: '100%' }}>
-              <Switch location={location}>
-                <Route exact path="/" component={Home} />
+      <Switch location={location}>
+        <Route exact path="/" component={Home} />
 
-                <Route exact path="/profile" component={Profile} />
-                <Route exact path="/chooseName" component={ChooseName} />
-                <Route exact path="/chooseAvatar" component={ChooseAvatar} />
-                <Route exact path="/chooseTheme" component={ChooseTheme} />
-                <Route exact path="/chooseBudget" component={ChooseBudget} />
+        <Route exact path="/profile" component={Profile} />
+        <Route exact path="/chooseName" component={ChooseName} />
+        <Route exact path="/chooseAvatar" component={ChooseAvatar} />
+        <Route exact path="/chooseTheme" component={ChooseTheme} />
+        <Route exact path="/chooseBudget" component={ChooseBudget} />
 
-                <Route exact path="/newBill" component={AddBill} />
-                <Route exact path="/bills" component={Bills} />
-                <Route path="/bills/:billId" component={EditBill} />
+        <Route exact path="/newBill" component={AddBill} />
+        <Route exact path="/bills" component={Bills} />
+        <Route path="/bills/:billId" component={EditBill} />
 
-                <Route exact path="/newExpense" component={AddExpense} />
-                <Route exact path="/expenses" component={Expenses} />
-                <Route path="/expenses/:expenseId" component={EditExpense} />
+        <Route exact path="/newExpense" component={AddExpense} />
+        <Route exact path="/expenses" component={Expenses} />
+        <Route path="/expenses/:expenseId" component={EditExpense} />
 
-                <Route path="*" component={NotFound} />
-              </Switch>
-            </div>
-          </CSSTransition>
-        </TransitionGroup>
-      </div>
+        <Route path="*" component={NotFound} />
+      </Switch>
     );
   }
 }
