@@ -83,6 +83,16 @@ export default (state: ExpenseState = initialState, action: AnyExpenseAction): E
           [action.expenseId]: null,
         },
       };
+    case ActionType.SET_MONTH:
+      return {
+        ...state,
+        month: action.month,
+      };
+    case ActionType.SET_YEAR:
+      return {
+        ...state,
+        year: action.year,
+      };
     default:
       return state;
   }

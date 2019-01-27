@@ -20,4 +20,6 @@ interface ExpenseState {
   fetchExpenseErrors: { [expenseId: string]: null | Error };
   fetchExpensesByMonthErrorMatrix: FetchExpensesByMonthErrorMatrix;
   fetchedExpensesByMonthMatrix: FetchedExpensesByMonthMatrix;
+  month: number;
+  year: number;
 }

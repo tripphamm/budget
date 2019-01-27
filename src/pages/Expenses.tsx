@@ -20,9 +20,14 @@ import FloatingActionButtonBuffer from '../components/floatingActionButtons/Floa
 import { floatingActionButtonBufferHeight } from '../settings/magicNumbers';
 import { BudgeState } from '../state/rootState';
 import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
+import { setMonth, setYear } from '../state/expense/actionCreators';
 import { fetchExpensesByMonth } from '../state/expense/asyncActionCreators';
 import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
-import { FetchExpensesByMonthActionCreator } from '../state/expense/actions';
+import {
+  FetchExpensesByMonthActionCreator,
+  SetMonthAction,
+  SetYearAction,
+} from '../state/expense/actions';
 import Avatar from '../components/Avatar';
 import Loading from '../components/Loading';
 import CurrentMonthExpenses from './CurrentMonthExpenses';
@@ -46,6 +51,8 @@ type ExpensesProps = RouteComponentProps<ExpensesRouteParams> & {
   fetchExpensesByMonth: FetchExpensesByMonthActionCreator;
   fetchedExpensesByMonthMatrix: FetchedExpensesByMonthMatrix;
   toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
+  setMonth: (month: number) => SetMonthAction;
+  setYear: (year: number) => SetYearAction;
 };
 
 const startingYear = 2018;
@@ -73,36 +80,12 @@ class Expenses extends React.Component<ExpensesProps, {}> {
       return;
     }
 
-    const fetchedExpenses = this.fetchedExpenses();
-    if (!fetchedExpenses) {
-      this.props.fetchExpensesByMonth(year, month);
-    }
-  }
-
-  componentDidUpdate(prevProps: ExpensesProps) {
-    const { match } = this.props;
-    const { params } = match;
-    const { month: monthParam, year: yearParam } = params;
-
-    const { match: prevMatch } = prevProps;
-    const { params: prevParams } = prevMatch;
-    const { month: prevMonthParam, year: prevYearParam } = prevParams;
-
-    // evacuate if month and year haven't changed
-    if (monthParam === prevMonthParam && yearParam === prevYearParam) {
-      return;
-    }
-
-    let month: number;
-    let year: number;
-    try {
-      const parsedDate = parseDateParams(monthParam, yearParam);
-      month = parsedDate.month;
-      year = parsedDate.year;
-    } catch (error) {
-      console.error(error);
-      return;
-    }
+    // we remember the latest month and yar in redux
+    // so that we can come back to the correct month if the user navigates away
+    // the month and year from the URL should be considered the source of truth
+    // the month and year in redux are only used as a cache to remember the last month visited
+    this.props.setMonth(month);
+    this.props.setYear(year);
 
     const fetchedExpenses = this.fetchedExpenses();
     if (!fetchedExpenses) {
@@ -145,8 +128,6 @@ class Expenses extends React.Component<ExpensesProps, {}> {
       month = parsedDate.month;
       year = parsedDate.year;
     } catch (error) {
-      console.error(error);
-
       return <CurrentMonthExpenses />;
     }
 
@@ -289,6 +270,8 @@ function mapDispatchToProps(dispatch: Dispatch) {
     {
       toggleSideDrawerOpen,
       fetchExpensesByMonth,
+      setMonth,
+      setYear,
     },
     dispatch,
   );

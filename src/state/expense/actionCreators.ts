@@ -10,6 +10,8 @@ import {
   FetchExpenseSuccessAction,
   FetchExpenseFailureAction,
   ClearFetchExpenseErrorAction,
+  SetMonthAction,
+  SetYearAction,
 } from './actions';
 
 export function saveExpenseSuccess(expense: BudgeExpense): SaveExpenseSuccessAction {
@@ -93,5 +95,19 @@ export function clearFetchExpensesByMonthError(
     type: ActionType.CLEAR_FETCH_EXPENSES_BY_MONTH_ERROR,
     year,
     month,
+  };
+}
+
+export function setMonth(month: number): SetMonthAction {
+  return {
+    type: ActionType.SET_MONTH,
+    month,
+  };
+}
+
+export function setYear(year: number): SetYearAction {
+  return {
+    type: ActionType.SET_YEAR,
+    year,
   };
 }

@@ -13,7 +13,9 @@ type AnyExpenseAction =
   | ClearFetchExpenseErrorAction
   | FetchExpensesByMonthSuccessAction
   | FetchExpensesByMonthFailureAction
-  | ClearFetchExpensesByMonthErrorAction;
+  | ClearFetchExpensesByMonthErrorAction
+  | SetMonthAction
+  | SetYearAction;
 
 interface SaveExpenseSuccessAction {
   type: ActionType.SAVE_EXPENSE_SUCCESS;
@@ -65,6 +67,16 @@ interface ClearFetchExpensesByMonthErrorAction {
   type: ActionType.CLEAR_FETCH_EXPENSES_BY_MONTH_ERROR;
   year: number;
   month: number;
+}
+
+interface SetMonthAction {
+  type: ActionType.SET_MONTH;
+  month: number;
+}
+
+interface SetYearAction {
+  type: ActionType.SET_YEAR;
+  year: number;
 }
 
 // action creators

@@ -1,14 +1,22 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import TodayIcon from '@material-ui/icons/Today';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import { BudgeState } from '../state/rootState';
+import { getExpensesURL } from '../utils/routingUtil';
 
-class BottomNav extends React.Component<RouteComponentProps, {}> {
+type BottomNavProps = RouteComponentProps & {
+  lastExpensesMonth: number;
+  lastExpensesYear: number;
+};
+
+class BottomNav extends React.Component<BottomNavProps, {}> {
   render() {
-    const { history, match } = this.props;
+    const { history, match, lastExpensesMonth, lastExpensesYear } = this.props;
 
     const { url } = match;
 
@@ -29,7 +37,7 @@ class BottomNav extends React.Component<RouteComponentProps, {}> {
           history.push('/profile');
           break;
         case 'expenses':
-          history.push('/expenses');
+          history.push(getExpensesURL(lastExpensesYear, lastExpensesMonth));
           break;
         case 'bills':
           history.push('/bills');
@@ -57,4 +65,16 @@ class BottomNav extends React.Component<RouteComponentProps, {}> {
   }
 }
 
-export default withRouter(BottomNav);
+function mapStateToProps(state: BudgeState) {
+  return {
+    lastExpensesMonth: state.expenseState.month,
+    lastExpensesYear: state.expenseState.year,
+  };
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    null,
+  )(BottomNav),
+);

@@ -64,8 +64,8 @@ class Routes extends React.Component<RoutesProps> {
                 <Route path="/bills/:billId" component={EditBill} />
 
                 <Route exact path="/newExpense" component={AddExpense} />
-                <Route exact path="/expenses/:year/:month" component={Expenses} />
                 <Route exact path="/expenses" component={CurrentMonthExpenses} />
+                <Route exact path="/expenses/:year/:month" component={Expenses} />
                 <Route path="/expenses/:expenseId" component={EditExpense} />
 
                 <Route path="*" component={NotFound} />
