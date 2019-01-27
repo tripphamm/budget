@@ -2,10 +2,13 @@ import { BudgeBill } from '../../budge-app-env';
 
 interface BillState {
   bills: {
-    [id: string]: BudgeBill;
+    [billId: string]: BudgeBill;
   };
   saveBillErrors: {
-    [id: string]: Error | null;
+    [billId: string]: Error | null;
+  };
+  deleteBillErrors: {
+    [billId: string]: Error | null;
   };
   fetchBillsError: Error | null;
   fetchedBills: boolean;

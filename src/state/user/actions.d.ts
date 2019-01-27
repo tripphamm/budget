@@ -1,5 +1,5 @@
 import ActionType from './ActionType';
-import { BudgeUser, UserDocument, BudgeIcon } from '../../budge-app-env';
+import { BudgeUser, UserDocument, BudgeIcon, BudgeBudget } from '../../budge-app-env';
 import { Dispatch } from 'redux';
 import { BudgeState } from '../rootState';
 
@@ -12,7 +12,8 @@ type AnyUserAction =
   | ClearSaveUserErrorAction
   | SetUserAvatarAction
   | SetUserDisplayNameAction
-  | SetUserThemeAction;
+  | SetUserThemeAction
+  | SetUserBudgetAction;
 
 interface SetUserSuccessAction {
   type: ActionType.SET_USER_SUCCESS;
@@ -55,6 +56,11 @@ interface SetUserAvatarAction {
 interface SetUserThemeAction {
   type: ActionType.SET_USER_THEME;
   theme: string;
+}
+
+interface SetUserBudgetAction {
+  type: ActionType.SET_USER_BUDGET;
+  budget: BudgeBudget;
 }
 
 // action creators

@@ -3,22 +3,23 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { default as createUuid } from 'uuid/v4';
-import NumberFormat from 'react-number-format';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import { Select, OutlinedInput, MenuItem, Theme, withTheme } from '@material-ui/core';
 
 import Shell from '../components/Shell';
+import BottomAction from '../components/BottomAction';
+import CurrencyTextField from '../components/CurrencyTextField';
 
 import Cadence from '../enums/Cadence';
-import BottomAction from '../components/BottomAction';
 import IconType from '../enums/IconType';
-import { SaveBillActionCreator } from '../state/bill/actions';
+import { SaveBillActionCreator, DeleteBillActionCreator } from '../state/bill/actions';
 import { BudgeState } from '../state/rootState';
-import { saveBill } from '../state/bill/asyncActionCreators';
+import { saveBill, deleteBill } from '../state/bill/asyncActionCreators';
 import { BudgeBill, BudgeIcon } from '../budge-app-env';
-import Loading from './Loading';
 import EmojiIcon from './EmojiIcon';
+import FullScreenMessage from './FullScreenMessage';
 
 const billIcons = [
   ':money_with_wings:',
@@ -36,31 +37,12 @@ const billIcons = [
   ':woman_lifting_weights:',
 ];
 
-function numberFormatCustom(props: any) {
-  const { inputRef, onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange={values => {
-        onChange({
-          target: {
-            value: values.value,
-          },
-        });
-      }}
-      thousandSeparator
-      prefix="$"
-    />
-  );
-}
-
 type BillEditorProps = RouteComponentProps & {
   theme: Theme;
   loading?: boolean;
   bill?: BudgeBill;
   saveBill: SaveBillActionCreator;
+  deleteBill: DeleteBillActionCreator;
 };
 
 interface BillEditorState {
@@ -70,21 +52,51 @@ interface BillEditorState {
   icon: BudgeIcon;
 }
 
+const defaultState = {
+  name: '',
+  amount: 0,
+  cadence: Cadence.MONTHLY,
+  icon: { type: IconType.EMOJI, value: ':money_with_wings:' },
+};
+
 class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
   constructor(props: BillEditorProps) {
     super(props);
 
-    this.state = {
-      name: props.bill ? props.bill.name : '',
-      amount: props.bill ? props.bill.amount : 0,
-      cadence: props.bill ? props.bill.cadence : Cadence.MONTHLY,
-      icon: props.bill ? props.bill.icon : { type: IconType.EMOJI, value: ':money_with_wings:' },
-    };
+    this.state = { ...defaultState };
 
     this.setName = this.setName.bind(this);
     this.setAmount = this.setAmount.bind(this);
     this.setCadence = this.setCadence.bind(this);
     this.setIcon = this.setIcon.bind(this);
+  }
+
+  componentDidMount() {
+    const { bill } = this.props;
+
+    if (bill) {
+      this.setState({
+        ...defaultState,
+        ...(bill.name ? { name: bill.name } : {}),
+        ...(bill.amount ? { amount: bill.amount } : {}),
+        ...(bill.cadence ? { cadence: bill.cadence } : {}),
+        ...(bill.icon ? { icon: bill.icon } : {}),
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps: BillEditorProps) {
+    const { bill } = this.props;
+
+    if (!prevProps.bill && bill) {
+      this.setState({
+        ...defaultState,
+        ...(bill.name ? { name: bill.name } : {}),
+        ...(bill.amount ? { amount: bill.amount } : {}),
+        ...(bill.cadence ? { cadence: bill.cadence } : {}),
+        ...(bill.icon ? { icon: bill.icon } : {}),
+      });
+    }
   }
 
   setName(name: string) {
@@ -105,17 +117,19 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
 
   render() {
     const { name, amount, cadence, icon } = this.state;
-    const { theme, history, bill, saveBill, loading = false } = this.props;
+    const { theme, history, bill, saveBill, deleteBill, loading = false } = this.props;
 
     return (
       <Shell
         title={bill ? 'Edit Bill' : 'Add Bill'}
         iconElementLeft={<ArrowBackIcon />}
         onLeftIconButtonClick={history.goBack}
+        iconElementRight={bill ? <DeleteIcon /> : undefined}
+        onRightIconButtonClick={bill ? () => deleteBill(bill.id, history.goBack) : undefined}
         bottomBarElement={
           <BottomAction
             label="Save"
-            disabled={loading && name.length === 0 && amount === 0}
+            disabled={loading || name.length === 0 || amount === 0}
             onClick={() =>
               saveBill(
                 {
@@ -133,7 +147,7 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
           />
         }
       >
-        {loading && <Loading message="Loading bill..." />}
+        {loading && <FullScreenMessage message="Loading bill..." />}
         {!loading && (
           <div
             style={{
@@ -152,15 +166,12 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
               value={name}
               onChange={event => this.setName(event.target.value)}
             />
-            <TextField
+            <CurrencyTextField
               variant="outlined"
               fullWidth
               label="Amount"
               value={amount}
               onChange={event => this.setAmount(parseFloat(event.target.value))}
-              InputProps={{
-                inputComponent: numberFormatCustom,
-              }}
             />
             <Select
               value={cadence}
@@ -221,6 +232,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators(
     {
       saveBill,
+      deleteBill,
     },
     dispatch,
   );

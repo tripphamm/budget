@@ -29,10 +29,12 @@ export default (state: UserState = initialState, action: AnyUserAction): UserSta
           persistedDisplayName: action.userDocument.displayName,
           persistedAvatar: action.userDocument.avatar,
           persistedTheme: action.userDocument.theme,
+          persistedBudget: action.userDocument.budget,
 
           displayName: action.userDocument.displayName,
           avatar: action.userDocument.avatar,
           theme: action.userDocument.theme,
+          budget: action.userDocument.budget,
         },
       };
     case ActionType.SAVE_USER_FAILURE:
@@ -67,6 +69,14 @@ export default (state: UserState = initialState, action: AnyUserAction): UserSta
         user: {
           ...(state.user as BudgeUser), // tip typescript that state.user is guaranteed to be non-null
           theme: action.theme,
+        },
+      };
+    case ActionType.SET_USER_BUDGET:
+      return {
+        ...state,
+        user: {
+          ...(state.user as BudgeUser), // tip typescript that state.user is guaranteed to be non-null
+          budget: action.budget,
         },
       };
     default:

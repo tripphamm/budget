@@ -1,5 +1,5 @@
 import ActionType from './ActionType';
-import { BudgeUser, UserDocument, BudgeIcon } from '../../budge-app-env';
+import { BudgeUser, UserDocument, BudgeIcon, BudgeBudget } from '../../budge-app-env';
 import {
   SetUserSuccessAction,
   SetUserFailureAction,
@@ -10,6 +10,7 @@ import {
   SetUserDisplayNameAction,
   SetUserAvatarAction,
   SetUserThemeAction,
+  SetUserBudgetAction,
 } from './actions';
 
 export function setUserSuccess(user: BudgeUser | null): SetUserSuccessAction {
@@ -70,5 +71,12 @@ export function setUserTheme(theme: string): SetUserThemeAction {
   return {
     type: ActionType.SET_USER_THEME,
     theme,
+  };
+}
+
+export function setUserBudget(budget: BudgeBudget): SetUserBudgetAction {
+  return {
+    type: ActionType.SET_USER_BUDGET,
+    budget,
   };
 }

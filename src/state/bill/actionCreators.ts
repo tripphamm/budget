@@ -7,6 +7,9 @@ import {
   FetchBillsSuccessAction,
   FetchBillsFailureAction,
   ClearFetchBillsErrorAction,
+  DeleteBillSuccessAction,
+  DeleteBillFailureAction,
+  ClearDeleteBillErrorAction,
 } from './actions';
 
 export function saveBillSuccess(bill: BudgeBill): SaveBillSuccessAction {
@@ -16,22 +19,44 @@ export function saveBillSuccess(bill: BudgeBill): SaveBillSuccessAction {
   };
 }
 
-export function saveBillFailure(id: string, error: Error): SaveBillFailureAction {
+export function saveBillFailure(billId: string, error: Error): SaveBillFailureAction {
   return {
     type: ActionType.SAVE_BILL_FAILURE,
-    id,
+    billId,
     error,
   };
 }
 
-export function clearSaveBillError(id: string): ClearSaveBillErrorAction {
+export function clearSaveBillError(billId: string): ClearSaveBillErrorAction {
   return {
     type: ActionType.CLEAR_SAVE_BILL_ERROR,
-    id,
+    billId,
   };
 }
 
-export function fetchBillsSuccess(bills: { [id: string]: BudgeBill }): FetchBillsSuccessAction {
+export function deleteBillSuccess(billId: string): DeleteBillSuccessAction {
+  return {
+    type: ActionType.DELETE_BILL_SUCCESS,
+    billId,
+  };
+}
+
+export function deleteBillFailure(billId: string, error: Error): DeleteBillFailureAction {
+  return {
+    type: ActionType.DELETE_BILL_FAILURE,
+    billId,
+    error,
+  };
+}
+
+export function clearDeleteBillError(billId: string): ClearDeleteBillErrorAction {
+  return {
+    type: ActionType.CLEAR_DELETE_BILL_ERROR,
+    billId,
+  };
+}
+
+export function fetchBillsSuccess(bills: { [billId: string]: BudgeBill }): FetchBillsSuccessAction {
   return {
     type: ActionType.FETCH_BILLS_SUCCESS,
     bills,
@@ -45,7 +70,7 @@ export function fetchBillsFailure(error: Error): FetchBillsFailureAction {
   };
 }
 
-export function clearFetchBillsError(id: string): ClearFetchBillsErrorAction {
+export function clearFetchBillsError(): ClearFetchBillsErrorAction {
   return {
     type: ActionType.CLEAR_FETCH_BILLS_ERROR,
   };

@@ -17,6 +17,9 @@ interface ExpenseState {
   saveExpenseErrors: {
     [expenseId: string]: Error | null;
   };
+  deleteExpenseErrors: {
+    [expenseId: string]: Error | null;
+  };
   fetchExpenseErrors: { [expenseId: string]: null | Error };
   fetchExpensesByMonthErrorMatrix: FetchExpensesByMonthErrorMatrix;
   fetchedExpensesByMonthMatrix: FetchedExpensesByMonthMatrix;

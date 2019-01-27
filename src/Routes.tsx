@@ -16,6 +16,7 @@ import NotFound from './pages/NotFound';
 import ChooseAvatar from './pages/ChooseAvatar';
 import ChooseTheme from './pages/ChooseTheme';
 import ChooseName from './pages/ChooseName';
+import ChooseBudget from './pages/ChooseBudget';
 import SignIn from './pages/SignIn';
 import { BudgeState } from './state/rootState';
 import { BudgeUser } from './budge-app-env';
@@ -46,6 +47,10 @@ class Routes extends React.Component<RoutesProps> {
       return <Route path="*" component={ChooseTheme} />;
     }
 
+    if (user.persistedBudget === null) {
+      return <Route path="*" component={ChooseBudget} />;
+    }
+
     return (
       <div style={{ position: 'relative' }}>
         <TransitionGroup>
@@ -58,6 +63,7 @@ class Routes extends React.Component<RoutesProps> {
                 <Route exact path="/chooseName" component={ChooseName} />
                 <Route exact path="/chooseAvatar" component={ChooseAvatar} />
                 <Route exact path="/chooseTheme" component={ChooseTheme} />
+                <Route exact path="/chooseBudget" component={ChooseBudget} />
 
                 <Route exact path="/newBill" component={AddBill} />
                 <Route exact path="/bills" component={Bills} />

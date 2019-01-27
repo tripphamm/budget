@@ -37,7 +37,7 @@ class EditBill extends React.Component<EditBillProps, {}> {
     const bill = bills[billId];
 
     if (!fetchedBills) {
-      <BillEditor loading={true} />;
+      return <BillEditor loading={true} />;
     }
 
     if (!bill) {

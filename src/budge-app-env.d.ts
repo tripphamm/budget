@@ -13,10 +13,12 @@ interface BudgeUser {
   persistedDisplayName: string | null;
   persistedAvatar: BudgeIcon | null;
   persistedTheme: string | null;
+  persistedBudget: BudgeBudget | null;
 
   displayName: string | null;
   avatar: BudgeIcon | null;
   theme: string | null;
+  budget: BudgeBudget | null;
 }
 
 interface BudgeUpload {
@@ -42,8 +44,13 @@ interface BudgeExpense {
   icon: BudgeIcon;
 }
 
+interface BudgeBudget {
+  amount: number;
+}
+
 interface UserDocument {
   displayName: string | null;
   avatar: BudgeIcon | null;
   theme: string | null;
+  budget: BudgeBudget | null;
 }

@@ -9,6 +9,8 @@ import {
   fetchExpenseFailure,
   fetchExpensesByMonthSuccess,
   fetchExpensesByMonthFailure,
+  deleteExpenseSuccess,
+  deleteExpenseFailure,
 } from './actionCreators';
 import { BudgeExpense } from '../../budge-app-env';
 import { BudgeState } from '../rootState';
@@ -40,6 +42,39 @@ export function saveExpense(expense: BudgeExpense, onSaveComplete?: () => void) 
       dispatch(saveExpenseSuccess(expense));
     } catch (error) {
       dispatch(saveExpenseFailure(expense.id, error));
+    }
+
+    dispatch(toggleSaving(false));
+  };
+}
+
+export function deleteExpense(expenseId: string, onDeleteComplete?: () => void) {
+  return async (dispatch: Dispatch, getState: () => BudgeState) => {
+    dispatch(toggleSaving(true));
+
+    try {
+      const stateSnapshot = getState();
+      const { userState } = stateSnapshot;
+      const { user } = userState;
+
+      if (user === null) {
+        throw new Error('`user` must be  non-null in order to delete an expense');
+      }
+
+      await firestore
+        .collection('users')
+        .doc(user.id)
+        .collection('expenses')
+        .doc(expenseId)
+        .delete();
+
+      if (typeof onDeleteComplete === 'function') {
+        onDeleteComplete();
+      }
+
+      dispatch(deleteExpenseSuccess(expenseId));
+    } catch (error) {
+      dispatch(deleteExpenseFailure(expenseId, error));
     }
 
     dispatch(toggleSaving(false));

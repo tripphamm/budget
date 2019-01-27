@@ -18,7 +18,7 @@ import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
 import { FetchBillsActionCreator } from '../state/bill/actions';
 import Avatar from '../components/Avatar';
 import Cadence from '../enums/Cadence';
-import Loading from '../components/Loading';
+import FullScreenMessage from '../components/FullScreenMessage';
 
 const cadenceToPer = {
   [Cadence.DAILY]: 'per day',
@@ -57,20 +57,8 @@ class Bills extends React.Component<BillsProps, {}> {
           this.props.toggleSideDrawerOpen();
         }}
       >
-        {!fetchedBills && <Loading message="Loading bills..." />}
-        {fetchedBills && billIds.length === 0 && (
-          <div
-            style={{
-              height: `calc(100% - ${floatingActionButtonBufferHeight}px`,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-            }}
-          >
-            <Typography>Nothing here yet</Typography>
-          </div>
-        )}
+        {!fetchedBills && <FullScreenMessage message="Loading bills..." />}
+        {fetchedBills && billIds.length === 0 && <FullScreenMessage message="Nothing here yet" />}
         {fetchedBills && billIds.length > 0 && (
           <List>
             {billIds.map(id => {

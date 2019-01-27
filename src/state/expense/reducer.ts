@@ -29,6 +29,29 @@ export default (state: ExpenseState = initialState, action: AnyExpenseAction): E
           [action.expenseId]: null,
         },
       };
+    case ActionType.DELETE_EXPENSE_SUCCESS:
+      const { [action.expenseId]: removedExpense, ...remainingExpenses } = state.expenses;
+
+      return {
+        ...state,
+        expenses: remainingExpenses,
+      };
+    case ActionType.DELETE_EXPENSE_FAILURE:
+      return {
+        ...state,
+        deleteExpenseErrors: {
+          ...state.deleteExpenseErrors,
+          [action.expenseId]: action.error,
+        },
+      };
+    case ActionType.CLEAR_DELETE_EXPENSE_ERROR:
+      return {
+        ...state,
+        deleteExpenseErrors: {
+          ...state.deleteExpenseErrors,
+          [action.expenseId]: null,
+        },
+      };
     case ActionType.FETCH_EXPENSES_BY_MONTH_SUCCESS:
       return {
         ...state,

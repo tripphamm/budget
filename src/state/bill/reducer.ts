@@ -18,7 +18,7 @@ export default (state: BillState = initialState, action: AnyBillAction): BillSta
         ...state,
         saveBillErrors: {
           ...state.saveBillErrors,
-          [action.id]: action.error,
+          [action.billId]: action.error,
         },
       };
     case ActionType.CLEAR_SAVE_BILL_ERROR:
@@ -26,7 +26,30 @@ export default (state: BillState = initialState, action: AnyBillAction): BillSta
         ...state,
         saveBillErrors: {
           ...state.saveBillErrors,
-          [action.id]: null,
+          [action.billId]: null,
+        },
+      };
+    case ActionType.DELETE_BILL_SUCCESS:
+      const { [action.billId]: removedBill, ...remainingBills } = state.bills;
+
+      return {
+        ...state,
+        bills: remainingBills,
+      };
+    case ActionType.DELETE_BILL_FAILURE:
+      return {
+        ...state,
+        deleteBillErrors: {
+          ...state.deleteBillErrors,
+          [action.billId]: action.error,
+        },
+      };
+    case ActionType.CLEAR_DELETE_BILL_ERROR:
+      return {
+        ...state,
+        deleteBillErrors: {
+          ...state.deleteBillErrors,
+          [action.billId]: null,
         },
       };
     case ActionType.FETCH_BILLS_SUCCESS:

@@ -8,6 +8,9 @@ type AnyExpenseAction =
   | SaveExpenseSuccessAction
   | SaveExpenseFailureAction
   | ClearSaveExpenseErrorAction
+  | DeleteExpenseSuccessAction
+  | DeleteExpenseFailureAction
+  | ClearDeleteExpenseErrorAction
   | FetchExpenseSuccessAction
   | FetchExpenseFailureAction
   | ClearFetchExpenseErrorAction
@@ -30,6 +33,22 @@ interface SaveExpenseFailureAction {
 
 interface ClearSaveExpenseErrorAction {
   type: ActionType.CLEAR_SAVE_EXPENSE_ERROR;
+  expenseId: string;
+}
+
+interface DeleteExpenseSuccessAction {
+  type: ActionType.DELETE_EXPENSE_SUCCESS;
+  expenseId: string;
+}
+
+interface DeleteExpenseFailureAction {
+  type: ActionType.DELETE_EXPENSE_FAILURE;
+  expenseId: string;
+  error: Error;
+}
+
+interface ClearDeleteExpenseErrorAction {
+  type: ActionType.CLEAR_DELETE_EXPENSE_ERROR;
   expenseId: string;
 }
 
@@ -84,6 +103,11 @@ interface SetYearAction {
 type SaveExpenseActionCreator = (
   expense: BudgeExpense,
   onSaveComplete?: () => void,
+) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
+
+type DeleteExpenseActionCreator = (
+  expenseId: string,
+  onDeleteComplete?: () => void,
 ) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
 
 type FetchExpensesByMonthActionCreator = (

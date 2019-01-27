@@ -3,21 +3,22 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { default as createUuid } from 'uuid/v4';
-import NumberFormat from 'react-number-format';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import { Theme, withTheme } from '@material-ui/core';
 
 import Shell from '../components/Shell';
 import BottomAction from '../components/BottomAction';
+import CurrencyTextField from '../components/CurrencyTextField';
 
 import IconType from '../enums/IconType';
-import { SaveExpenseActionCreator } from '../state/expense/actions';
+import { SaveExpenseActionCreator, DeleteExpenseActionCreator } from '../state/expense/actions';
 import { BudgeState } from '../state/rootState';
-import { saveExpense } from '../state/expense/asyncActionCreators';
+import { saveExpense, deleteExpense } from '../state/expense/asyncActionCreators';
 import { BudgeExpense, BudgeIcon } from '../budge-app-env';
-import Loading from './Loading';
 import EmojiIcon from './EmojiIcon';
+import FullScreenMessage from './FullScreenMessage';
 
 const expenseIcons = [
   ':money_with_wings:',
@@ -31,31 +32,12 @@ const expenseIcons = [
   ':coffee:',
 ];
 
-function numberFormatCustom(props: any) {
-  const { inputRef, onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange={values => {
-        onChange({
-          target: {
-            value: values.value,
-          },
-        });
-      }}
-      thousandSeparator
-      prefix="$"
-    />
-  );
-}
-
 type ExpenseEditorProps = RouteComponentProps & {
   theme: Theme;
   loading?: boolean;
   expense?: BudgeExpense;
   saveExpense: SaveExpenseActionCreator;
+  deleteExpense: DeleteExpenseActionCreator;
 };
 
 interface ExpenseEditorState {
@@ -64,21 +46,47 @@ interface ExpenseEditorState {
   icon: BudgeIcon;
 }
 
+const defaultState = {
+  name: '',
+  amount: 0,
+  icon: { type: IconType.EMOJI, value: ':money_with_wings:' },
+};
+
 class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorState> {
   constructor(props: ExpenseEditorProps) {
     super(props);
 
-    this.state = {
-      name: props.expense ? props.expense.name : '',
-      amount: props.expense ? props.expense.amount : 0,
-      icon: props.expense
-        ? props.expense.icon
-        : { type: IconType.EMOJI, value: ':money_with_wings:' },
-    };
+    this.state = { ...defaultState };
 
     this.setName = this.setName.bind(this);
     this.setAmount = this.setAmount.bind(this);
     this.setIcon = this.setIcon.bind(this);
+  }
+
+  componentDidMount() {
+    const { expense } = this.props;
+
+    if (expense) {
+      this.setState({
+        ...defaultState,
+        ...(expense.name ? { name: expense.name } : {}),
+        ...(expense.amount ? { amount: expense.amount } : {}),
+        ...(expense.icon ? { icon: expense.icon } : {}),
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps: ExpenseEditorProps) {
+    const { expense } = this.props;
+
+    if (!prevProps.expense && expense) {
+      this.setState({
+        ...defaultState,
+        ...(expense.name ? { name: expense.name } : {}),
+        ...(expense.amount ? { amount: expense.amount } : {}),
+        ...(expense.icon ? { icon: expense.icon } : {}),
+      });
+    }
   }
 
   setName(name: string) {
@@ -95,17 +103,21 @@ class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorSta
 
   render() {
     const { name, amount, icon } = this.state;
-    const { theme, history, expense, saveExpense, loading = false } = this.props;
+    const { theme, history, expense, saveExpense, deleteExpense, loading = false } = this.props;
 
     return (
       <Shell
         title={expense ? 'Edit Expense' : 'Add Expense'}
         iconElementLeft={<ArrowBackIcon />}
         onLeftIconButtonClick={history.goBack}
+        iconElementRight={expense ? <DeleteIcon /> : undefined}
+        onRightIconButtonClick={
+          expense ? () => deleteExpense(expense.id, history.goBack) : undefined
+        }
         bottomBarElement={
           <BottomAction
             label="Save"
-            disabled={loading && name.length === 0 && amount === 0}
+            disabled={loading || name.length === 0 || amount === 0}
             onClick={() =>
               saveExpense(
                 {
@@ -115,15 +127,13 @@ class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorSta
                   icon,
                   timestamp: new Date().getTime(),
                 },
-                () => {
-                  history.push('/expenses');
-                },
+                history.goBack,
               )
             }
           />
         }
       >
-        {loading && <Loading message="Loading expense..." />}
+        {loading && <FullScreenMessage message="Loading expense..." />}
         {!loading && (
           <div
             style={{
@@ -142,15 +152,12 @@ class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorSta
               value={name}
               onChange={event => this.setName(event.target.value)}
             />
-            <TextField
+            <CurrencyTextField
               variant="outlined"
               fullWidth
               label="Amount"
               value={amount}
               onChange={event => this.setAmount(parseFloat(event.target.value))}
-              InputProps={{
-                inputComponent: numberFormatCustom,
-              }}
             />
             <div
               style={{
@@ -200,6 +207,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators(
     {
       saveExpense,
+      deleteExpense,
     },
     dispatch,
   );

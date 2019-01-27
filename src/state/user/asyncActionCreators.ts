@@ -25,14 +25,16 @@ export function observeAuthState() {
             dispatch(
               setUserSuccess({
                 id: firebaseUser.uid,
-                persistedDisplayName: userDocument ? userDocument.displayName : null,
-                persistedAvatar: userDocument ? userDocument.avatar : null,
-                persistedTheme: userDocument ? userDocument.theme : null,
+                persistedDisplayName: userDocument ? userDocument.displayName || null : null,
+                persistedAvatar: userDocument ? userDocument.avatar || null : null,
+                persistedTheme: userDocument ? userDocument.theme || null : null,
+                persistedBudget: userDocument ? userDocument.budget || null : null,
 
                 // default to firebase display name
                 displayName: userDocument ? userDocument.displayName : firebaseUser.displayName,
-                avatar: userDocument ? userDocument.avatar : null,
-                theme: userDocument ? userDocument.theme : null,
+                avatar: userDocument ? userDocument.avatar || null : null,
+                theme: userDocument ? userDocument.theme || null : null,
+                budget: userDocument ? userDocument.budget || null : null,
               }),
             );
           } catch (error) {
@@ -96,6 +98,7 @@ export function saveUser(onSaveComplete?: () => void) {
         displayName: user.displayName,
         avatar: user.avatar,
         theme: user.theme,
+        budget: user.budget,
       };
 
       await firestore.doc(`users/${user.id}`).set(userDocument);

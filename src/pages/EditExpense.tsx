@@ -45,7 +45,7 @@ class EditExpense extends React.Component<EditExpenseProps, {}> {
     }
 
     if (!expense) {
-      <ExpenseEditor loading={true} />;
+      return <ExpenseEditor loading={true} />;
     }
 
     return <ExpenseEditor expense={expense} />;

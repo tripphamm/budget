@@ -4,6 +4,7 @@ const today = new Date();
 const initialState: ExpenseState = {
   expenses: {},
   saveExpenseErrors: {},
+  deleteExpenseErrors: {},
   fetchExpenseErrors: {},
   fetchExpensesByMonthErrorMatrix: null,
   fetchedExpensesByMonthMatrix: null,

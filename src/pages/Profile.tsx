@@ -11,6 +11,7 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core';
+import NumberFormat from 'react-number-format';
 
 import { BudgeUser } from '../budge-app-env';
 import Shell from '../components/Shell';
@@ -32,9 +33,6 @@ class Profile extends React.Component<ProfileProps, {}> {
     if (user === null) {
       throw new Error('`user` must be non-null to render Profile component');
     }
-
-    // assume that displayName is non-null
-    const displayName: string = user.displayName as string;
 
     // todo: what if userName is an empty string
     return (
@@ -60,13 +58,25 @@ class Profile extends React.Component<ProfileProps, {}> {
         <List>
           <ListItem button onClick={() => history.push('/chooseName')}>
             <MUIAvatar style={{ backgroundColor: theme.palette.secondary.main }}>
-              {displayName.slice(0, 1).toUpperCase()}
+              {user.displayName!.slice(0, 1).toUpperCase()}
             </MUIAvatar>
-            <ListItemText primary={displayName} />
+            <ListItemText primary={user.displayName!} />
           </ListItem>
           <ListItem button onClick={() => history.push('/chooseTheme')}>
             <MUIAvatar style={{ backgroundColor: theme.palette.primary.main }} />
             <ListItemText>Theme</ListItemText>
+          </ListItem>
+          <ListItem button onClick={() => history.push('/chooseBudget')}>
+            <MUIAvatar>$</MUIAvatar>
+            <ListItemText secondary="Budget">
+              <NumberFormat
+                displayType="text"
+                thousandSeparator
+                prefix="$"
+                suffix="/month"
+                value={user.budget!.amount}
+              />
+            </ListItemText>
           </ListItem>
         </List>
       </Shell>

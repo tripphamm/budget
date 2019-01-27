@@ -29,7 +29,6 @@ import {
   SetYearAction,
 } from '../state/expense/actions';
 import Avatar from '../components/Avatar';
-import Loading from '../components/Loading';
 import CurrentMonthExpenses from './CurrentMonthExpenses';
 import {
   FetchExpensesByMonthErrorMatrix,
@@ -38,6 +37,7 @@ import {
 } from '../state/expense/state';
 import { selectExpensesByMonthMatrix } from '../state/expense/selectors';
 import { parseDateParams, getExpensesURL } from '../utils/routingUtil';
+import FullScreenMessage from '../components/FullScreenMessage';
 
 interface ExpensesRouteParams {
   month: string;
@@ -207,19 +207,9 @@ class Expenses extends React.Component<ExpensesProps, {}> {
             ))}
           </Select>
         </div>
-        {!fetchedExpenses && <Loading message="Loading expenses..." />}
+        {!fetchedExpenses && <FullScreenMessage message="Loading expenses..." />}
         {fetchedExpenses && expenseIds.length === 0 && (
-          <div
-            style={{
-              height: `calc(100% - ${floatingActionButtonBufferHeight}px`,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-            }}
-          >
-            <Typography>Nothing here yet</Typography>
-          </div>
+          <FullScreenMessage message="Nothing here yet" />
         )}
         {fetchedExpenses && expenseIds.length > 0 && (
           <List>

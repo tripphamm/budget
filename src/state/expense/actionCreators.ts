@@ -12,6 +12,9 @@ import {
   ClearFetchExpenseErrorAction,
   SetMonthAction,
   SetYearAction,
+  DeleteExpenseSuccessAction,
+  DeleteExpenseFailureAction,
+  ClearDeleteExpenseErrorAction,
 } from './actions';
 
 export function saveExpenseSuccess(expense: BudgeExpense): SaveExpenseSuccessAction {
@@ -32,6 +35,28 @@ export function saveExpenseFailure(expenseId: string, error: Error): SaveExpense
 export function clearSaveExpenseError(expenseId: string): ClearSaveExpenseErrorAction {
   return {
     type: ActionType.CLEAR_SAVE_EXPENSE_ERROR,
+    expenseId,
+  };
+}
+
+export function deleteExpenseSuccess(expenseId: string): DeleteExpenseSuccessAction {
+  return {
+    type: ActionType.DELETE_EXPENSE_SUCCESS,
+    expenseId,
+  };
+}
+
+export function deleteExpenseFailure(expenseId: string, error: Error): DeleteExpenseFailureAction {
+  return {
+    type: ActionType.DELETE_EXPENSE_FAILURE,
+    expenseId,
+    error,
+  };
+}
+
+export function clearDeleteExpenseError(expenseId: string): ClearDeleteExpenseErrorAction {
+  return {
+    type: ActionType.CLEAR_DELETE_EXPENSE_ERROR,
     expenseId,
   };
 }

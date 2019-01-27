@@ -7,6 +7,9 @@ type AnyBillAction =
   | SaveBillSuccessAction
   | SaveBillFailureAction
   | ClearSaveBillErrorAction
+  | DeleteBillSuccessAction
+  | DeleteBillFailureAction
+  | ClearDeleteBillErrorAction
   | FetchBillsSuccessAction
   | FetchBillsFailureAction
   | ClearFetchBillsErrorAction;
@@ -18,19 +21,35 @@ interface SaveBillSuccessAction {
 
 interface SaveBillFailureAction {
   type: ActionType.SAVE_BILL_FAILURE;
-  id: string;
+  billId: string;
   error: Error;
 }
 
 interface ClearSaveBillErrorAction {
   type: ActionType.CLEAR_SAVE_BILL_ERROR;
-  id: string;
+  billId: string;
+}
+
+interface DeleteBillSuccessAction {
+  type: ActionType.DELETE_BILL_SUCCESS;
+  billId: string;
+}
+
+interface DeleteBillFailureAction {
+  type: ActionType.DELETE_BILL_FAILURE;
+  billId: string;
+  error: Error;
+}
+
+interface ClearDeleteBillErrorAction {
+  type: ActionType.CLEAR_DELETE_BILL_ERROR;
+  billId: string;
 }
 
 interface FetchBillsSuccessAction {
   type: ActionType.FETCH_BILLS_SUCCESS;
   bills: {
-    [id: string]: BudgeBill;
+    [billId: string]: BudgeBill;
   };
 }
 
@@ -46,8 +65,13 @@ interface ClearFetchBillsErrorAction {
 // action creators
 
 type SaveBillActionCreator = (
-  expense: BudgeBill,
+  bill: BudgeBill,
   onSaveComplete?: () => void,
+) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
+
+type DeleteBillActionCreator = (
+  billId: string,
+  onDeleteComplete?: () => void,
 ) => (dispatch: Dispatch, getState: () => BudgeState) => Promise<void>;
 
 type FetchBillsActionCreator = () => (

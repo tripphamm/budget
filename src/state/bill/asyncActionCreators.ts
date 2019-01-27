@@ -8,6 +8,8 @@ import {
   saveBillFailure,
   fetchBillsSuccess,
   fetchBillsFailure,
+  deleteBillSuccess,
+  deleteBillFailure,
 } from './actionCreators';
 import { BudgeState } from '../rootState';
 
@@ -38,6 +40,39 @@ export function saveBill(bill: BudgeBill, onSaveComplete?: () => void) {
       dispatch(saveBillSuccess(bill));
     } catch (error) {
       dispatch(saveBillFailure(bill.id, error));
+    }
+
+    dispatch(toggleSaving(false));
+  };
+}
+
+export function deleteBill(billId: string, onDeleteComplete?: () => void) {
+  return async (dispatch: Dispatch, getState: () => BudgeState) => {
+    dispatch(toggleSaving(true));
+
+    try {
+      const stateSnapshot = getState();
+      const { userState } = stateSnapshot;
+      const { user } = userState;
+
+      if (user === null) {
+        throw new Error('`user` must be  non-null in order to delete a bill');
+      }
+
+      await firestore
+        .collection('users')
+        .doc(user.id)
+        .collection('bills')
+        .doc(billId)
+        .delete();
+
+      if (typeof onDeleteComplete === 'function') {
+        onDeleteComplete();
+      }
+
+      dispatch(deleteBillSuccess(billId));
+    } catch (error) {
+      dispatch(deleteBillFailure(billId, error));
     }
 
     dispatch(toggleSaving(false));
