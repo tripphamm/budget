@@ -45,12 +45,18 @@ class Profile extends React.Component<ProfileProps, {}> {
           toggleSideDrawerOpen();
         }}
       >
-        <button
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-          onClick={() => history.push('/chooseAvatar')}
-        >
-          <Avatar avatar={user.avatar} size={100} />
-        </button>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <button
+            type="button"
+            style={{
+              border: 'none',
+              backgroundColor: 'unset',
+            }}
+            onClick={() => history.push('/chooseAvatar')}
+          >
+            <Avatar avatar={user.avatar} size={100} />
+          </button>
+        </div>
         <List>
           <ListItem button onClick={() => history.push('/chooseName')}>
             <MUIAvatar style={{ backgroundColor: theme.palette.secondary.main }}>
