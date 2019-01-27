@@ -1,42 +1,22 @@
 import * as React from 'react';
-import { bindActionCreators, Dispatch } from 'redux';
-import { connect } from 'react-redux';
-import MenuIcon from '@material-ui/icons/Menu';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import Shell from '../components/Shell';
-import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
-import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
+import FullScreenMessage from '../components/FullScreenMessage';
 
-interface NotFoundProps {
-  toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
-}
-
-class NotFound extends React.Component<NotFoundProps, {}> {
+class NotFound extends React.Component<RouteComponentProps, {}> {
   render() {
     return (
       <Shell
         title="Not Found"
-        iconElementLeft={<MenuIcon />}
-        onLeftIconButtonClick={() => {
-          this.props.toggleSideDrawerOpen();
-        }}
+        iconElementLeft={<ArrowBackIcon />}
+        onLeftIconButtonClick={this.props.history.goBack}
       >
-        <div>Not found</div>
+        <FullScreenMessage message="Hmm, this page doesn't seem to exist" />
       </Shell>
     );
   }
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return bindActionCreators(
-    {
-      toggleSideDrawerOpen,
-    },
-    dispatch,
-  );
-}
-
-export default connect(
-  null,
-  mapDispatchToProps,
-)(NotFound);
+export default withRouter(NotFound);
