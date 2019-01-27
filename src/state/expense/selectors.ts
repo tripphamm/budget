@@ -9,9 +9,7 @@ export const selectExpensesByMonthMatrix = createSelector(
   expenses => {
     return Object.keys(expenses).reduce((expensesMatrix: ExpensesMatrix, expenseId) => {
       const expense = expenses[expenseId];
-      const date = new Date(expense.timestamp);
-      const year = date.getFullYear();
-      const month = date.getMonth();
+      const { year, month } = expense;
 
       if (expensesMatrix![year] === undefined) {
         return {

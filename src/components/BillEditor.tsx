@@ -123,9 +123,11 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
       <Shell
         title={bill ? 'Edit Bill' : 'Add Bill'}
         iconElementLeft={<ArrowBackIcon />}
-        onLeftIconButtonClick={history.goBack}
+        onLeftIconButtonClick={() => history.push('/bills')}
         iconElementRight={bill ? <DeleteIcon /> : undefined}
-        onRightIconButtonClick={bill ? () => deleteBill(bill.id, history.goBack) : undefined}
+        onRightIconButtonClick={
+          bill ? () => deleteBill(bill.id, () => history.push('/bills')) : undefined
+        }
         bottomBarElement={
           <BottomAction
             label="Save"

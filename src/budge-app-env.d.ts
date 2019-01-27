@@ -40,7 +40,8 @@ interface BudgeExpense {
   id: string;
   name: string;
   amount: number;
-  timestamp: number; // ms since epoch
+  month: number;
+  year: number;
   icon: BudgeIcon;
 }
 

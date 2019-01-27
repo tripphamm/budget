@@ -133,25 +133,12 @@ export function fetchExpensesByMonth(year: number, month: number) {
         throw new Error('`user` must be  non-null in order to fetch expenses');
       }
 
-      // determine the month and year to use for the max timestamp
-      let maxTimestampMonth = month + 1;
-      let maxTimestampYear = year;
-
-      // if month overflows to 12 (11 == December), set month to Jan and increment the year
-      if (maxTimestampMonth === 12) {
-        maxTimestampMonth = 0;
-        maxTimestampYear = maxTimestampYear + 1;
-      }
-
-      const minTimestamp = new Date(year, month).getTime();
-      const maxTimestamp = new Date(maxTimestampYear, maxTimestampMonth).getTime();
-
       const expensesSnapshot = await firestore
         .collection('users')
         .doc(user.id)
         .collection('expenses')
-        .where('timestamp', '>=', minTimestamp)
-        .where('timestamp', '<', maxTimestamp)
+        .where('year', '==', year)
+        .where('month', '==', month)
         .get();
 
       const expenses = expensesSnapshot.docs

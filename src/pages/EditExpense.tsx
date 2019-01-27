@@ -41,7 +41,7 @@ class EditExpense extends React.Component<EditExpenseProps, {}> {
 
     // todo: handle different types of errors in different ways
     if (error) {
-      <NotFound />;
+      return <NotFound />;
     }
 
     if (!expense) {

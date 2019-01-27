@@ -3,15 +3,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import MenuIcon from '@material-ui/icons/Menu';
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Select,
-  Typography,
-} from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
 import Shell from '../components/Shell';
 import FloatingAddButton from '../components/floatingActionButtons/Add';
@@ -29,7 +21,7 @@ import {
   SetYearAction,
 } from '../state/expense/actions';
 import Avatar from '../components/Avatar';
-import CurrentMonthExpenses from './CurrentMonthExpenses';
+import DateSelector from '../components/DateSelector';
 import {
   FetchExpensesByMonthErrorMatrix,
   FetchedExpensesByMonthMatrix,
@@ -39,12 +31,9 @@ import { selectExpensesByMonthMatrix } from '../state/expense/selectors';
 import { parseDateParams, getExpensesURL } from '../utils/routingUtil';
 import FullScreenMessage from '../components/FullScreenMessage';
 
-interface ExpensesRouteParams {
-  month: string;
-  year: string;
-}
-
-type ExpensesProps = RouteComponentProps<ExpensesRouteParams> & {
+type ExpensesProps = RouteComponentProps & {
+  month: number;
+  year: number;
   expensesByMonthMatrix: ExpensesMatrix;
   saveExpenseErrors: { [id: string]: Error | null };
   fetchExpensesByMonthErrorMatrix: FetchExpensesByMonthErrorMatrix;
@@ -55,8 +44,6 @@ type ExpensesProps = RouteComponentProps<ExpensesRouteParams> & {
   setYear: (year: number) => SetYearAction;
 };
 
-const startingYear = 2018;
-
 class Expenses extends React.Component<ExpensesProps, {}> {
   constructor(props: ExpensesProps) {
     super(props);
@@ -65,49 +52,23 @@ class Expenses extends React.Component<ExpensesProps, {}> {
   }
 
   componentDidMount() {
-    const { match } = this.props;
-    const { params } = match;
-    const { month: monthParam, year: yearParam } = params;
+    const { month, year } = this.props;
 
-    let month: number;
-    let year: number;
-    try {
-      const parsedDate = parseDateParams(monthParam, yearParam);
-      month = parsedDate.month;
-      year = parsedDate.year;
-    } catch (error) {
-      console.error(error);
-      return;
+    if (!this.fetchedExpenses()) {
+      this.props.fetchExpensesByMonth(year, month);
     }
+  }
 
-    // we remember the latest month and yar in redux
-    // so that we can come back to the correct month if the user navigates away
-    // the month and year from the URL should be considered the source of truth
-    // the month and year in redux are only used as a cache to remember the last month visited
-    this.props.setMonth(month);
-    this.props.setYear(year);
+  componentDidUpdate(prevProps: ExpensesProps) {
+    const { month, year } = this.props;
 
-    const fetchedExpenses = this.fetchedExpenses();
-    if (!fetchedExpenses) {
+    if (!this.fetchedExpenses()) {
       this.props.fetchExpensesByMonth(year, month);
     }
   }
 
   fetchedExpenses() {
-    const { match, fetchedExpensesByMonthMatrix } = this.props;
-    const { params } = match;
-    const { month: monthParam, year: yearParam } = params;
-
-    let month: number;
-    let year: number;
-    try {
-      const parsedDate = parseDateParams(monthParam, yearParam);
-      month = parsedDate.month;
-      year = parsedDate.year;
-    } catch (error) {
-      console.error(error);
-      return;
-    }
+    const { month, year, fetchedExpensesByMonthMatrix } = this.props;
 
     return (
       fetchedExpensesByMonthMatrix !== null &&
@@ -117,51 +78,15 @@ class Expenses extends React.Component<ExpensesProps, {}> {
   }
 
   render() {
-    const { history, match, expensesByMonthMatrix, fetchExpensesByMonthErrorMatrix } = this.props;
-    const { params } = match;
-    const { month: monthParam, year: yearParam } = params;
-
-    let month: number;
-    let year: number;
-    try {
-      const parsedDate = parseDateParams(monthParam, yearParam);
-      month = parsedDate.month;
-      year = parsedDate.year;
-    } catch (error) {
-      return <CurrentMonthExpenses />;
-    }
-
-    const today = new Date();
-    // get appropriate years for the Year dropdown
-    // starting with the year the app was released and every year after
-    // todo: could start with the year of the earlier expense
-    const currentYear = today.getFullYear();
-    const years: number[] = Array<number>(currentYear - startingYear + 1)
-      .fill(0)
-      .map((_, index) => startingYear + index);
-
-    // get appropriate list of months for the Month dropdown
-    // if the year is the current year, filter out any months after the current month
-    const currentMonth = today.getMonth();
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ].filter((_, index) => year !== currentYear || index <= currentMonth);
-
-    // if the selected date is in the future, redirect to the current month
-    if (year > currentYear || (year === currentYear && month > currentMonth)) {
-      return <CurrentMonthExpenses />;
-    }
+    const {
+      history,
+      month,
+      year,
+      expensesByMonthMatrix,
+      setMonth,
+      setYear,
+      fetchExpensesByMonthErrorMatrix,
+    } = this.props;
 
     const fetchedExpenses = this.fetchedExpenses();
 
@@ -183,30 +108,7 @@ class Expenses extends React.Component<ExpensesProps, {}> {
           this.props.toggleSideDrawerOpen();
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <Select
-            value={month}
-            onChange={event => history.push(getExpensesURL(year, parseInt(event.target.value, 10)))}
-          >
-            {months.map((month, index) => (
-              <MenuItem key={`month-select-month-${month}`} value={index}>
-                {month}
-              </MenuItem>
-            ))}
-          </Select>
-          <Select
-            value={year}
-            onChange={event =>
-              history.push(getExpensesURL(parseInt(event.target.value, 10), month))
-            }
-          >
-            {years.map(year => (
-              <MenuItem key={`year-select-year-${year}`} value={year}>
-                {year}
-              </MenuItem>
-            ))}
-          </Select>
-        </div>
+        <DateSelector month={month} year={year} onMonthChange={setMonth} onYearChange={setYear} />
         {!fetchedExpenses && <FullScreenMessage message="Loading expenses..." />}
         {fetchedExpenses && expenseIds.length === 0 && (
           <FullScreenMessage message="Nothing here yet" />
@@ -248,6 +150,8 @@ class Expenses extends React.Component<ExpensesProps, {}> {
 
 function mapStateToProps(state: BudgeState) {
   return {
+    month: state.expenseState.month,
+    year: state.expenseState.year,
     expensesByMonthMatrix: selectExpensesByMonthMatrix(state),
     saveExpenseErrors: state.expenseState.saveExpenseErrors,
     fetchExpensesByMonthErrorMatrix: state.expenseState.fetchExpensesByMonthErrorMatrix,

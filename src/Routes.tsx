@@ -5,7 +5,6 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import AddExpense from './pages/AddExpense';
 import EditExpense from './pages/EditExpense';
-import CurrentMonthExpenses from './pages/CurrentMonthExpenses';
 import Expenses from './pages/Expenses';
 import AddBill from './pages/AddBill';
 import EditBill from './pages/EditBill';
@@ -70,8 +69,7 @@ class Routes extends React.Component<RoutesProps> {
                 <Route path="/bills/:billId" component={EditBill} />
 
                 <Route exact path="/newExpense" component={AddExpense} />
-                <Route exact path="/expenses" component={CurrentMonthExpenses} />
-                <Route exact path="/expenses/:year/:month" component={Expenses} />
+                <Route exact path="/expenses" component={Expenses} />
                 <Route path="/expenses/:expenseId" component={EditExpense} />
 
                 <Route path="*" component={NotFound} />

@@ -19,6 +19,7 @@ import { saveExpense, deleteExpense } from '../state/expense/asyncActionCreators
 import { BudgeExpense, BudgeIcon } from '../budge-app-env';
 import EmojiIcon from './EmojiIcon';
 import FullScreenMessage from './FullScreenMessage';
+import DateSelector from './DateSelector';
 
 const expenseIcons = [
   ':money_with_wings:',
@@ -38,41 +39,56 @@ type ExpenseEditorProps = RouteComponentProps & {
   expense?: BudgeExpense;
   saveExpense: SaveExpenseActionCreator;
   deleteExpense: DeleteExpenseActionCreator;
+  expensesMonth: number; // the month and year selected on the expenses page
+  expensesYear: number;
 };
 
 interface ExpenseEditorState {
   name: string;
   amount: number;
   icon: BudgeIcon;
+  month: number;
+  year: number;
 }
 
+const today = new Date();
 const defaultState = {
   name: '',
   amount: 0,
   icon: { type: IconType.EMOJI, value: ':money_with_wings:' },
+  month: today.getMonth(),
+  year: today.getFullYear(),
 };
 
 class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorState> {
   constructor(props: ExpenseEditorProps) {
     super(props);
 
-    this.state = { ...defaultState };
+    this.state = {
+      ...defaultState,
+      month: props.expensesMonth, // initialize with the month/year from the expenses page
+      year: props.expensesYear,
+    };
 
     this.setName = this.setName.bind(this);
     this.setAmount = this.setAmount.bind(this);
     this.setIcon = this.setIcon.bind(this);
+    this.setMonth = this.setMonth.bind(this);
+    this.setYear = this.setYear.bind(this);
   }
 
   componentDidMount() {
     const { expense } = this.props;
 
     if (expense) {
-      this.setState({
-        ...defaultState,
+      this.setState(prevState => ({
+        ...prevState,
         ...(expense.name ? { name: expense.name } : {}),
         ...(expense.amount ? { amount: expense.amount } : {}),
         ...(expense.icon ? { icon: expense.icon } : {}),
-      });
+        ...(expense.month ? { month: expense.month } : {}),
+        ...(expense.year ? { year: expense.year } : {}),
+      }));
     }
   }
 
@@ -80,12 +96,14 @@ class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorSta
     const { expense } = this.props;
 
     if (!prevProps.expense && expense) {
-      this.setState({
-        ...defaultState,
+      this.setState(prevState => ({
+        ...prevState,
         ...(expense.name ? { name: expense.name } : {}),
         ...(expense.amount ? { amount: expense.amount } : {}),
         ...(expense.icon ? { icon: expense.icon } : {}),
-      });
+        ...(expense.month ? { month: expense.month } : {}),
+        ...(expense.year ? { year: expense.year } : {}),
+      }));
     }
   }
 
@@ -101,18 +119,26 @@ class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorSta
     this.setState({ icon });
   }
 
+  setMonth(month: number) {
+    this.setState({ month });
+  }
+
+  setYear(year: number) {
+    this.setState({ year });
+  }
+
   render() {
-    const { name, amount, icon } = this.state;
+    const { name, amount, icon, month, year } = this.state;
     const { theme, history, expense, saveExpense, deleteExpense, loading = false } = this.props;
 
     return (
       <Shell
         title={expense ? 'Edit Expense' : 'Add Expense'}
         iconElementLeft={<ArrowBackIcon />}
-        onLeftIconButtonClick={history.goBack}
+        onLeftIconButtonClick={() => history.push('/expenses')}
         iconElementRight={expense ? <DeleteIcon /> : undefined}
         onRightIconButtonClick={
-          expense ? () => deleteExpense(expense.id, history.goBack) : undefined
+          expense ? () => deleteExpense(expense.id, () => history.push('/expenses')) : undefined
         }
         bottomBarElement={
           <BottomAction
@@ -125,7 +151,8 @@ class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorSta
                   name,
                   amount,
                   icon,
-                  timestamp: new Date().getTime(),
+                  month,
+                  year,
                 },
                 history.goBack,
               )
@@ -144,6 +171,12 @@ class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorSta
               alignItems: 'center',
             }}
           >
+            <DateSelector
+              month={month}
+              year={year}
+              onMonthChange={this.setMonth}
+              onYearChange={this.setYear}
+            />
             <TextField
               variant="outlined"
               fullWidth
@@ -200,7 +233,10 @@ class ExpenseEditor extends React.Component<ExpenseEditorProps, ExpenseEditorSta
 }
 
 function mapStateToProps(state: BudgeState) {
-  return {};
+  return {
+    expensesMonth: state.expenseState.month,
+    expensesYear: state.expenseState.year,
+  };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
@@ -216,7 +252,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
 export default withTheme()(
   withRouter(
     connect(
-      null,
+      mapStateToProps,
       mapDispatchToProps,
     )(ExpenseEditor),
   ),

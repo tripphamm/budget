@@ -41,7 +41,7 @@ class EditBill extends React.Component<EditBillProps, {}> {
     }
 
     if (!bill) {
-      <NotFound />;
+      return <NotFound />;
     }
 
     return <BillEditor bill={bill} />;
