@@ -27,7 +27,7 @@ export function saveExpense(expense: BudgeExpense, onSaveComplete?: () => void) 
       }
 
       await firestore
-        .collection('expenses')
+        .collection('users')
         .doc(user.id)
         .collection('expenses')
         .doc(expense.id)
@@ -60,7 +60,7 @@ export function fetchExpense(expenseId: string) {
       }
 
       const expensesSnapshot = await firestore
-        .collection('expenses')
+        .collection('users')
         .doc(user.id)
         .collection('expenses')
         .where('id', '==', expenseId)
@@ -112,7 +112,7 @@ export function fetchExpensesByMonth(year: number, month: number) {
       const maxTimestamp = new Date(maxTimestampYear, maxTimestampMonth).getTime();
 
       const expensesSnapshot = await firestore
-        .collection('expenses')
+        .collection('users')
         .doc(user.id)
         .collection('expenses')
         .where('timestamp', '>=', minTimestamp)

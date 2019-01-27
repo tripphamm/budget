@@ -15,25 +15,29 @@ export function observeAuthState() {
       // auth.onAuthStateChanged returns the unsubscribe function
       unobserveAuthStateChanged = auth.onAuthStateChanged(async firebaseUser => {
         if (firebaseUser) {
-          const userDocumentSnapshot = await firestore.doc(`users/${firebaseUser.uid}`).get();
+          try {
+            const userDocumentSnapshot = await firestore.doc(`users/${firebaseUser.uid}`).get();
 
-          const userDocument = userDocumentSnapshot.exists
-            ? (userDocumentSnapshot.data() as UserDocument)
-            : null;
+            const userDocument = userDocumentSnapshot.exists
+              ? (userDocumentSnapshot.data() as UserDocument)
+              : null;
 
-          dispatch(
-            setUserSuccess({
-              id: firebaseUser.uid,
-              persistedDisplayName: userDocument ? userDocument.displayName : null,
-              persistedAvatar: userDocument ? userDocument.avatar : null,
-              persistedTheme: userDocument ? userDocument.theme : null,
+            dispatch(
+              setUserSuccess({
+                id: firebaseUser.uid,
+                persistedDisplayName: userDocument ? userDocument.displayName : null,
+                persistedAvatar: userDocument ? userDocument.avatar : null,
+                persistedTheme: userDocument ? userDocument.theme : null,
 
-              // default to firebase display name
-              displayName: userDocument ? userDocument.displayName : firebaseUser.displayName,
-              avatar: userDocument ? userDocument.avatar : null,
-              theme: userDocument ? userDocument.theme : null,
-            }),
-          );
+                // default to firebase display name
+                displayName: userDocument ? userDocument.displayName : firebaseUser.displayName,
+                avatar: userDocument ? userDocument.avatar : null,
+                theme: userDocument ? userDocument.theme : null,
+              }),
+            );
+          } catch (error) {
+            dispatch(setUserFailure(error));
+          }
         } else {
           dispatch(setUserSuccess(null));
         }

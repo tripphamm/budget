@@ -25,7 +25,7 @@ export function saveBill(bill: BudgeBill, onSaveComplete?: () => void) {
       }
 
       await firestore
-        .collection('bills')
+        .collection('users')
         .doc(user.id)
         .collection('bills')
         .doc(bill.id)
@@ -58,7 +58,7 @@ export function fetchBills() {
       }
 
       const billsSnapshot = await firestore
-        .collection('bills')
+        .collection('users')
         .doc(user.id)
         .collection('bills')
         .get();
