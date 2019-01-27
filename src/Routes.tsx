@@ -16,6 +16,8 @@ import ChooseTheme from './pages/ChooseTheme';
 import ChooseName from './pages/ChooseName';
 import ChooseBudget from './pages/ChooseBudget';
 import SignIn from './pages/SignIn';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+
 import { BudgeState } from './state/rootState';
 import { BudgeUser } from './budge-app-env';
 
@@ -28,6 +30,10 @@ class Routes extends React.Component<RoutesProps> {
     const { user, location } = this.props;
 
     if (user === null) {
+      if (location.pathname.includes('privacy')) {
+        return <Route path="*" component={PrivacyPolicy} />;
+      }
+
       return <Route path="*" component={SignIn} />;
     }
 
@@ -50,6 +56,7 @@ class Routes extends React.Component<RoutesProps> {
     return (
       <Switch location={location}>
         <Route exact path="/" component={Home} />
+        <Route exact path="/privacy" component={PrivacyPolicy} />
 
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/chooseName" component={ChooseName} />
