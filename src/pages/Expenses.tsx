@@ -3,7 +3,15 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import MenuIcon from '@material-ui/icons/Menu';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  withTheme,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 
 import Shell from '../components/Shell';
 import FloatingAddButton from '../components/floatingActionButtons/Add';
@@ -13,6 +21,7 @@ import { floatingActionButtonBufferHeight } from '../settings/magicNumbers';
 import { BudgeState } from '../state/rootState';
 import { toggleSideDrawerOpen } from '../state/shared/actionCreators';
 import { setMonth, setYear } from '../state/expense/actionCreators';
+import { fetchBills } from '../state/bill/asyncActionCreators';
 import { fetchExpensesByMonth } from '../state/expense/asyncActionCreators';
 import { ToggleSideDrawerOpenAction } from '../state/shared/actions';
 import {
@@ -28,10 +37,16 @@ import {
   ExpensesMatrix,
 } from '../state/expense/state';
 import { selectExpensesByMonthMatrix } from '../state/expense/selectors';
-import { parseDateParams, getExpensesURL } from '../utils/routingUtil';
 import FullScreenMessage from '../components/FullScreenMessage';
+import { BudgeUser, BudgeBill } from '../budge-app-env';
+import NumberFormat from 'react-number-format';
+import { FetchBillsActionCreator } from '../state/bill/actions';
 
 type ExpensesProps = RouteComponentProps & {
+  theme: Theme;
+  user: BudgeUser | null;
+  bills: { [billId: string]: BudgeBill };
+  fetchedBills: boolean;
   month: number;
   year: number;
   expensesByMonthMatrix: ExpensesMatrix;
@@ -39,6 +54,7 @@ type ExpensesProps = RouteComponentProps & {
   fetchExpensesByMonthErrorMatrix: FetchExpensesByMonthErrorMatrix;
   fetchExpensesByMonth: FetchExpensesByMonthActionCreator;
   fetchedExpensesByMonthMatrix: FetchedExpensesByMonthMatrix;
+  fetchBills: FetchBillsActionCreator;
   toggleSideDrawerOpen: (open?: boolean) => ToggleSideDrawerOpenAction;
   setMonth: (month: number) => SetMonthAction;
   setYear: (year: number) => SetYearAction;
@@ -52,7 +68,11 @@ class Expenses extends React.Component<ExpensesProps, {}> {
   }
 
   componentDidMount() {
-    const { month, year } = this.props;
+    const { month, year, fetchedBills } = this.props;
+
+    if (!fetchedBills) {
+      this.props.fetchBills();
+    }
 
     if (!this.fetchedExpenses()) {
       this.props.fetchExpensesByMonth(year, month);
@@ -79,6 +99,10 @@ class Expenses extends React.Component<ExpensesProps, {}> {
 
   render() {
     const {
+      theme,
+      user,
+      bills,
+      fetchedBills,
       history,
       month,
       year,
@@ -90,6 +114,8 @@ class Expenses extends React.Component<ExpensesProps, {}> {
 
     const fetchedExpenses = this.fetchedExpenses();
 
+    const loading = !fetchedExpenses || !fetchedBills;
+
     // if we have expenses for the current
     const expenses =
       expensesByMonthMatrix !== null &&
@@ -100,6 +126,35 @@ class Expenses extends React.Component<ExpensesProps, {}> {
 
     const expenseIds = Object.keys(expenses);
 
+    const budget = user!.budget!.amount;
+    const billsTotal = Object.keys(bills).reduce((total, billId) => {
+      return total + bills[billId].amount;
+    }, 0);
+
+    const expensesTotal = expenseIds.reduce((total, expenseId) => {
+      return total + expenses[expenseId].amount;
+    }, 0);
+
+    const budgetMinusBills = budget - billsTotal;
+
+    const expensePercentage = 100 * (expensesTotal / budgetMinusBills);
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    let todayMarkerPosition = null;
+    if (month === currentMonth && year === currentYear) {
+      const daysInThisMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const daysLeftInThisMonth = daysInThisMonth - now.getDate();
+
+      todayMarkerPosition = 100 - 100 * (daysLeftInThisMonth / daysInThisMonth);
+    }
+
+    let barColor = theme.palette.primary.light;
+    if (todayMarkerPosition && expensePercentage > todayMarkerPosition) {
+      barColor = theme.palette.error.light;
+    }
+
     return (
       <Shell
         title="Expenses"
@@ -109,11 +164,69 @@ class Expenses extends React.Component<ExpensesProps, {}> {
         }}
       >
         <DateSelector month={month} year={year} onMonthChange={setMonth} onYearChange={setYear} />
-        {!fetchedExpenses && <FullScreenMessage message="Loading expenses..." />}
-        {fetchedExpenses && expenseIds.length === 0 && (
-          <FullScreenMessage message="Nothing here yet" />
+        {!loading && expenseIds.length > 0 && budgetMinusBills > 0 && (
+          <>
+            <div
+              style={{
+                marginTop: 10,
+                position: 'relative',
+                border: `1px solid ${theme.palette.divider}`,
+                height: 40,
+                borderRadius: 3,
+              }}
+            >
+              <div
+                style={{
+                  height: '100%',
+                  width: `${expensePercentage}%`,
+                  backgroundColor: barColor,
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: `${todayMarkerPosition}%`,
+                  height: 40,
+                  width: 1,
+                  backgroundColor: theme.palette.divider,
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography>
+                <NumberFormat
+                  displayType="text"
+                  thousandSeparator
+                  prefix="$"
+                  suffix=" spent"
+                  value={expensesTotal}
+                />
+              </Typography>
+              <Typography variant="h4">
+                <NumberFormat
+                  displayType="text"
+                  thousandSeparator
+                  prefix="$"
+                  suffix=" left"
+                  value={budgetMinusBills - expensesTotal}
+                />
+              </Typography>
+              <Typography>
+                <NumberFormat
+                  displayType="text"
+                  thousandSeparator
+                  prefix="$"
+                  suffix=" max"
+                  value={budgetMinusBills}
+                />
+              </Typography>
+            </div>
+          </>
         )}
-        {fetchedExpenses && expenseIds.length > 0 && (
+        {loading && <FullScreenMessage message="Loading expenses..." />}
+        {!loading && expenseIds.length === 0 && <FullScreenMessage message="Nothing here yet" />}
+        {!loading && expenseIds.length > 0 && (
           <List>
             {expenseIds.map(id => {
               const expense = expenses[id];
@@ -150,6 +263,9 @@ class Expenses extends React.Component<ExpensesProps, {}> {
 
 function mapStateToProps(state: BudgeState) {
   return {
+    user: state.userState.user,
+    bills: state.billState.bills,
+    fetchedBills: state.billState.fetchedBills,
     month: state.expenseState.month,
     year: state.expenseState.year,
     expensesByMonthMatrix: selectExpensesByMonthMatrix(state),
@@ -166,12 +282,15 @@ function mapDispatchToProps(dispatch: Dispatch) {
       fetchExpensesByMonth,
       setMonth,
       setYear,
+      fetchBills,
     },
     dispatch,
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Expenses);
+export default withTheme()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(Expenses),
+);
