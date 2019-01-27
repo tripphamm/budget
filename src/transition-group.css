@@ -1,0 +1,17 @@
+.fade-enter {
+  left: 100%;
+}
+
+.fade-enter.fade-enter-active {
+  left: 0;
+  transition: left 500ms ease-in;
+}
+
+.fade-exit {
+  left: 0;
+}
+
+.fade-exit.fade-exit-active {
+  left: -100%;
+  transition: left 500ms ease-in;
+}

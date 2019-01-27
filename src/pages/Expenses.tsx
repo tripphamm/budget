@@ -145,6 +145,8 @@ class Expenses extends React.Component<ExpensesProps, {}> {
       month = parsedDate.month;
       year = parsedDate.year;
     } catch (error) {
+      console.error(error);
+
       return <CurrentMonthExpenses />;
     }
 

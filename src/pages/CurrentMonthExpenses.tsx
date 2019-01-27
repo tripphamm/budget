@@ -6,5 +6,6 @@ export default function currentMonthExpenses() {
   const month = today.getMonth() + 1; // so that Jan is 1 rather than 0
   const year = today.getFullYear();
 
+  console.log('redirect');
   return <Redirect to={`/expenses/${year}/${month}`} />;
 }

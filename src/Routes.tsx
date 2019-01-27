@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter, RouteComponentProps } from 'react-router-dom';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import AddExpense from './pages/AddExpense';
 import EditExpense from './pages/EditExpense';
@@ -16,8 +17,10 @@ import ChooseAvatar from './pages/ChooseAvatar';
 import ChooseTheme from './pages/ChooseTheme';
 import ChooseName from './pages/ChooseName';
 import SignIn from './pages/SignIn';
-import { BudgeUser } from './budge-app-env';
 import { BudgeState } from './state/rootState';
+import { BudgeUser } from './budge-app-env';
+
+import './transition-group.css';
 
 type RoutesProps = RouteComponentProps & {
   user: BudgeUser | null;
@@ -25,7 +28,7 @@ type RoutesProps = RouteComponentProps & {
 
 class Routes extends React.Component<RoutesProps> {
   render() {
-    const { user } = this.props;
+    const { user, location } = this.props;
 
     if (user === null) {
       return <Route path="*" component={SignIn} />;
@@ -44,25 +47,33 @@ class Routes extends React.Component<RoutesProps> {
     }
 
     return (
-      <Switch>
-        <Route exact path="/" component={Home} />
+      <div style={{ position: 'relative' }}>
+        <TransitionGroup>
+          <CSSTransition key={location.key} timeout={{ enter: 500, exit: 500 }} classNames="fade">
+            <div style={{ position: 'absolute', top: 0, width: '100%' }}>
+              <Switch location={location}>
+                <Route exact path="/" component={Home} />
 
-        <Route exact path="/profile" component={Profile} />
-        <Route exact path="/chooseName" component={ChooseName} />
-        <Route exact path="/chooseAvatar" component={ChooseAvatar} />
-        <Route exact path="/chooseTheme" component={ChooseTheme} />
+                <Route exact path="/profile" component={Profile} />
+                <Route exact path="/chooseName" component={ChooseName} />
+                <Route exact path="/chooseAvatar" component={ChooseAvatar} />
+                <Route exact path="/chooseTheme" component={ChooseTheme} />
 
-        <Route exact path="/newBill" component={AddBill} />
-        <Route exact path="/bills" component={Bills} />
-        <Route path="/bills/:billId" component={EditBill} />
+                <Route exact path="/newBill" component={AddBill} />
+                <Route exact path="/bills" component={Bills} />
+                <Route path="/bills/:billId" component={EditBill} />
 
-        <Route exact path="/newExpense" component={AddExpense} />
-        <Route exact path="/expenses" component={CurrentMonthExpenses} />
-        <Route exact path="/expenses/:year/:month" component={Expenses} />
-        <Route path="/expenses/:expenseId" component={EditExpense} />
+                <Route exact path="/newExpense" component={AddExpense} />
+                <Route exact path="/expenses/:year/:month" component={Expenses} />
+                <Route exact path="/expenses" component={CurrentMonthExpenses} />
+                <Route path="/expenses/:expenseId" component={EditExpense} />
 
-        <Route path="*" component={NotFound} />
-      </Switch>
+                <Route path="*" component={NotFound} />
+              </Switch>
+            </div>
+          </CSSTransition>
+        </TransitionGroup>
+      </div>
     );
   }
 }
