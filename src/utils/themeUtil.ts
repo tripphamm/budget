@@ -23,10 +23,6 @@ export const defaultThemePalette: ThemePalette = {
 };
 
 export const themePaletteMap: { [name: string]: ThemePalette } = {
-  red: {
-    primary: red,
-    secondary: lightGreen,
-  },
   pink: {
     primary: pink,
     secondary: blue,
