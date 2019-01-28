@@ -40,7 +40,7 @@ export default function dateSelector(props: DateSelectorProps) {
   ].filter((_, index) => year !== currentYear || index <= currentMonth);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-evenly' }}>
       <Select value={month} onChange={event => onMonthChange(parseInt(event.target.value, 10))}>
         {months.map((m, index) => (
           <MenuItem key={`month-select-month-${m}`} value={index}>
