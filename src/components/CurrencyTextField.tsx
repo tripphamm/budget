@@ -25,6 +25,7 @@ function numberFormatCustom(props: any) {
 export default function currencyTextField(props: TextFieldProps) {
   return (
     <TextField
+      type="number"
       InputProps={{
         inputComponent: numberFormatCustom,
       }}
