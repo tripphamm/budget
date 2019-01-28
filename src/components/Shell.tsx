@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Div100vh from 'react-div-100vh';
 
 import BottomNav from './BottomNav';
 import SideDrawer from './SideDrawer';
@@ -34,10 +35,10 @@ class Shell extends React.Component<ShellProps, {}> {
     } = this.props;
 
     return (
-      <div
+      <Div100vh
         style={{
           position: 'relative',
-          height: '100vh',
+          height: '100rvh',
         }}
       >
         <AppBar position="static">
@@ -59,7 +60,7 @@ class Shell extends React.Component<ShellProps, {}> {
           style={{
             boxSizing: 'border-box',
             // set the size of the viewport (between the app bar and bottom nav)
-            height: `calc(100vh - ${appBarHeight + bottomNavHeight}px)`,
+            height: `calc(100% - ${appBarHeight + bottomNavHeight}px)`,
             overflow: 'auto',
             padding: 20,
           }}
@@ -67,7 +68,7 @@ class Shell extends React.Component<ShellProps, {}> {
           {children}
         </div>
         {bottomBarElement}
-      </div>
+      </Div100vh>
     );
   }
 }

@@ -21,6 +21,7 @@
     "@types/uuid": "^3.4.4",
     "emojione": "^4.0.0",
     "react": "^16.7.0",
+    "react-div-100vh": "^0.3.2",
     "react-dom": "^16.7.0",
     "react-number-format": "^4.0.5",
     "react-redux": "^6.0.0",

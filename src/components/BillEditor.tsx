@@ -189,7 +189,7 @@ class BillEditor extends React.Component<BillEditorProps, BillEditorState> {
             <div
               style={{
                 padding: 5,
-                maxHeight: 175, // enough room for 2 rows of icons
+                maxHeight: 102, // enough room for 2 rows of icons
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
