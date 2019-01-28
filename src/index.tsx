@@ -5,6 +5,7 @@ import { Provider as ReduxStoreProvider } from 'react-redux';
 import { getStore } from './state/store';
 import { initialState } from './state/rootReducer';
 import App from './App';
+import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <ReduxStoreProvider store={getStore(initialState)}>
@@ -12,3 +13,5 @@ ReactDOM.render(
   </ReduxStoreProvider>,
   document.getElementById('root'),
 );
+
+serviceWorker.register();
