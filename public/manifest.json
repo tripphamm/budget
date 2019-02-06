@@ -3,12 +3,16 @@
   "name": "Budge - budgeting made easy",
   "icons": [
     {
-      "src": "icon.svg",
-      "sizes": "512x512 192x192 64x64 32x32 24x24 16x16",
+      "src": "favicon.ico",
+      "sizes": "256x256 128x128 64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logox600.png",
+      "src": "logo.svg",
+      "sizes": "64x64 32x32 24x24 16x16"
+    },
+    {
+      "src": "logo.png",
       "sizes": "600x600",
       "type": "image/png"
     }
